@@ -13,13 +13,22 @@
     "pages": [
       {
         "group": "Internal",
+        "public": true,
         "pages": ["index"]
+      },
+      {
+        "group": "API Reference",
+        "public": true,
+        "pages": ["api-reference/introduction"]
       }
     ]
   },
   "logo": {
     "light": "/logo/sleaklogo_full_darktext_padding.png",
     "dark": "/logo/sleaklogo_full_lighttext_padding.png"
+  },
+  "api": {
+    "openapi": "openapi.json"
   },
   "navbar": {
     "links": [
