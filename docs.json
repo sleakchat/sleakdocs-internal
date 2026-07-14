@@ -13,12 +13,10 @@
     "pages": [
       {
         "group": "Internal",
-        "public": true,
         "pages": ["index"]
       },
       {
         "group": "API Reference",
-        "public": true,
         "pages": [
           "api-reference/introduction",
           "api-reference/ping"
