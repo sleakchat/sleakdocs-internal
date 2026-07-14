@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "luma",
-  "name": "Sleak",
+  "theme": "almond",
+  "name": "Sleak internal docs",
   "custom_css": ["/custom.css"],
   "colors": {
     "primary": "#8551FB",
@@ -17,10 +17,7 @@
       },
       {
         "group": "API Reference",
-        "pages": [
-          "api-reference/introduction",
-          "api-reference/ping"
-        ]
+        "pages": ["api-reference/introduction", "api-reference/ping"]
       }
     ]
   },
@@ -28,26 +25,33 @@
     "light": "/logo/sleaklogo_full_darktext_padding.png",
     "dark": "/logo/sleaklogo_full_lighttext_padding.png"
   },
+  "fonts": {
+    "heading": {
+      "family": "Geist",
+      "source": "https://cdn.jsdelivr.net/npm/geist@1/dist/fonts/geist-sans/Geist-SemiBold.woff2",
+      "format": "woff2",
+      "weight": 600
+    },
+    "body": {
+      "family": "Geist",
+      "source": "https://cdn.jsdelivr.net/npm/geist@1/dist/fonts/geist-sans/Geist-Regular.woff2",
+      "format": "woff2",
+      "weight": 400
+    }
+  },
+  "search": {
+    "location": "top"
+  },
   "api": {
     "openapi": "openapi.json"
   },
   "navbar": {
     "links": [
       {
-        "label": "Website",
-        "href": "https://sleak.chat"
+        "label": "Public Docs",
+        "href": "https://docs.sleak.chat"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.sleak.chat"
-    }
+    ]
   },
-  "footer": {
-    "socials": {
-      "website": "https://sleak.chat",
-      "linkedin": "https://www.linkedin.com/company/sleak-chat"
-    }
-  }
+  "footer": {}
 }

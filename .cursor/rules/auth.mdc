@@ -1,0 +1,13 @@
+---
+description: Never use public flags — authentication is handled by Mintlify dashboard
+alwaysApply: true
+---
+
+# Authentication
+
+Authentication for this project is managed entirely via the Mintlify dashboard (Private + Authenticated).
+
+**Never** add `public: true` to any navigation group in `docs.json`.
+**Never** add `public: true` to any page frontmatter.
+
+Adding these flags overrides the dashboard auth and exposes pages to unauthenticated users.
