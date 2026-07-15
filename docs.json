@@ -4,7 +4,7 @@
   "name": "Sleak internal docs",
   "custom_css": ["/custom.css"],
   "seo": {
-    "indexing": "none"
+    "indexing": "navigable"
   },
   "colors": {
     "primary": "#8551FB",
