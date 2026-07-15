@@ -3,40 +3,32 @@ title: 'API Reference'
 description: 'Sleak Internal API Reference'
 ---
 
-Welcome to the Sleak Internal API reference. This documentation is generated from our OpenAPI specification.
+Welcome to the Sleak Internal API reference. This documentation covers all backend API routes living in GCP Cloud Run - and is generated from our OpenAPI specification.
 
-<Card title='Agent' icon='bot' href='/agent/webhook/message'>
+<Card title='Agent' icon='bot' href='/api-reference/agent/process-message-webhook'>
   Webhook receiver for incoming agent messages.
 </Card>
 
-<Card title='Cloud Run Cleanup Service' icon='trash-2' href='/cleanup_services/purge_jobs'>
-  Purge completed or failed Cloud Run jobs.
-</Card>
-
-<Card title='Embedding Web' icon='globe' href='/embedding_web/process'>
-  Process, embed, and manage web content for retrieval.
-</Card>
-
-<Card title='Evaluations Processor' icon='chart-bar' href='/evaluations_processor/process'>
-  Run and process chat evaluation pipelines.
-</Card>
-
-<Card title='Sleak Gateway' icon='network' href='/gateway/embedding_xml_processor'>
-  Central gateway routing requests across internal services.
-</Card>
-
-<Card title='Memory Service' icon='database' href='/memory/add-messages'>
+<Card title='Memory Service' icon='database' href='/api-reference/memory-service/append-messages-to-session-memory'>
   Store and manage conversation memory messages.
 </Card>
 
-<Card title='Chat Queue' icon='message-circle-x' href='/queueing_chat_closed/queueing/close_chat'>
-  Queue events for closing completed chats.
+<Card title='Embedding Web' icon='globe' href='/api-reference/embedding-web/scrape-and-embed-web-pages'>
+  Process, embed, and manage web content for retrieval.
 </Card>
 
-<Card title='Chat Evaluation Queue' icon='message-circle-check' href='/queueing_evaluations/queueing/evaluations'>
+<Card title='Evaluations Processor' icon='chart-bar' href='/api-reference/evaluations-processor/process-chat-evaluation'>
+  Run and process chat evaluation pipelines.
+</Card>
+
+<Card title='Chat Evaluation Queue' icon='message-circle-check' href='/api-reference/chat-evaluation-queue/queue-chat-evaluation'>
   Queue chats for evaluation processing.
 </Card>
 
-<Card title='Tags Queue' icon='tag' href='/queueing_tags/queueing/tags'>
+<Card title='Chat Closing Queue' icon='message-circle-x' href='/api-reference/chat-closing-queue/close-or-delete-chat'>
+  Queue events for closing completed chats.
+</Card>
+
+<Card title='Chat Tagging Queue' icon='tag' href='/api-reference/chat-tagging-queue/queue-chat-tagging-task'>
   Queue events for applying tags to chats.
 </Card>
