@@ -3,8 +3,13 @@
   "info": {
     "title": "Sleak Services API",
     "version": "1.0",
-    "description": "Combined OpenAPI document for all Sleak FastAPI services. Operations are grouped by service tag; each path is prefixed with its service name so the services coexist in one document."
+    "description": "Combined OpenAPI document for all Sleak internal services. Each path is prefixed with its service name."
   },
+  "servers": [
+    {
+      "url": "https://api.v1.sleak.chat"
+    }
+  ],
   "tags": [
     {
       "name": "Agent",
@@ -31,11 +36,11 @@
       "description": "A FastAPI application for managing chat evaluation queues with 15-minute timeout"
     },
     {
-      "name": "Chat Queue (queueing_chat_closed)",
+      "name": "Chat Queue",
       "description": "A FastAPI application for managing chat queues with configurable timeout"
     },
     {
-      "name": "Chat Queue (queueing_tags)",
+      "name": "Chat Queue",
       "description": "A FastAPI application for managing chat queues with 15-minute timeout"
     },
     {
@@ -47,7 +52,7 @@
     "/agent/webhook/message": {
       "post": {
         "summary": "Process Message Webhook",
-        "description": "Receives an inbound visitor message, runs the LangGraph agent with the chatbot's configuration and tools, and posts the AI response back to the chat.\n\nActual path on the Agent service: `/webhook/message`.",
+        "description": "Receives an inbound visitor message, runs the LangGraph agent with the chatbot's configuration and tools, and posts the AI response back to the chat.\n\nActual path on the **Agent** service: `/webhook/message`.",
         "operationId": "agent_process_message_webhook_webhook_message_post",
         "requestBody": {
           "content": {
@@ -87,7 +92,7 @@
     "/gateway/embedding_xml_processor": {
       "post": {
         "summary": "Process XML Sitemap Embeddings",
-        "description": "Forwards the raw JSON body to the XML embedding processor, running it via the sleak-embedding-xml Hatchet workflow and falling back to the embedding-xml Cloud Run service. See the Embedding XML Processor service for the request body schema.\n\nActual path on the Sleak Gateway service: `/embedding_xml_processor`.",
+        "description": "Forwards the raw JSON body to the XML embedding processor, running it via the sleak-embedding-xml Hatchet workflow and falling back to the embedding-xml Cloud Run service. See the Embedding XML Processor service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/embedding_xml_processor`.",
         "operationId": "gateway_embedding_xml_processor_embedding_xml_processor_post",
         "requestBody": {
           "content": {
@@ -117,7 +122,7 @@
     "/gateway/embedding_web": {
       "post": {
         "summary": "Queue Web Page Embedding",
-        "description": "Forwards the raw JSON body to the web embedding queue, running it via the sleak-embedding-web-queue Hatchet workflow and falling back to the embedding-web-queue Cloud Run service. See the Embedding Web service for the request body schema.\n\nActual path on the Sleak Gateway service: `/embedding_web`.",
+        "description": "Forwards the raw JSON body to the web embedding queue, running it via the sleak-embedding-web-queue Hatchet workflow and falling back to the embedding-web-queue Cloud Run service. See the Embedding Web service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/embedding_web`.",
         "operationId": "gateway_embedding_web_embedding_web_post",
         "requestBody": {
           "content": {
@@ -147,7 +152,7 @@
     "/gateway/queueing_evaluations": {
       "post": {
         "summary": "Queue Evaluations",
-        "description": "Forwards the raw JSON body to the evaluation queueing service, running it via the sleak-queue-evaluation Hatchet workflow and falling back to the queue-evaluation Cloud Run service. See the Queueing Evaluations service for the request body schema.\n\nActual path on the Sleak Gateway service: `/queueing_evaluations`.",
+        "description": "Forwards the raw JSON body to the evaluation queueing service, running it via the sleak-queue-evaluation Hatchet workflow and falling back to the queue-evaluation Cloud Run service. See the Queueing Evaluations service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/queueing_evaluations`.",
         "operationId": "gateway_queueing_evaluations_queueing_evaluations_post",
         "requestBody": {
           "content": {
@@ -177,7 +182,7 @@
     "/gateway/evaluations_processor": {
       "post": {
         "summary": "Process Evaluations",
-        "description": "Forwards the raw JSON body to the evaluations processor, running it via the sleak-process-evaluation Hatchet workflow and falling back to the process-evaluation Cloud Run service. See the Evaluations Processor service for the request body schema.\n\nActual path on the Sleak Gateway service: `/evaluations_processor`.",
+        "description": "Forwards the raw JSON body to the evaluations processor, running it via the sleak-process-evaluation Hatchet workflow and falling back to the process-evaluation Cloud Run service. See the Evaluations Processor service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/evaluations_processor`.",
         "operationId": "gateway_evaluations_processor_evaluations_processor_post",
         "requestBody": {
           "content": {
@@ -207,7 +212,7 @@
     "/gateway/agent": {
       "post": {
         "summary": "Process Agent Message",
-        "description": "Forwards the raw JSON body to the Agent service, running it via the sleak-agent-process-message Hatchet workflow (tagging chat_id, chatbot_id and organization_id as metadata) and falling back to the agent Cloud Run service at /webhook/message. See the Agent service for the request body schema.\n\nActual path on the Sleak Gateway service: `/agent`.",
+        "description": "Forwards the raw JSON body to the Agent service, running it via the sleak-agent-process-message Hatchet workflow (tagging chat_id, chatbot_id and organization_id as metadata) and falling back to the agent Cloud Run service at /webhook/message. See the Agent service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/agent`.",
         "operationId": "gateway_agent_agent_post",
         "requestBody": {
           "content": {
@@ -237,7 +242,7 @@
     "/gateway/embedding/csv": {
       "post": {
         "summary": "Embed CSV File",
-        "description": "Accepts a multipart CSV upload plus datasource, organization and chatbot identifiers, then embeds it via the sleak-embedding-csv Hatchet workflow (base64-encoding the file) and falls back to the embedding-csv Cloud Run service on failure.\n\nActual path on the Sleak Gateway service: `/embedding/csv`.",
+        "description": "Accepts a multipart CSV upload plus datasource, organization and chatbot identifiers, then embeds it via the sleak-embedding-csv Hatchet workflow (base64-encoding the file) and falls back to the embedding-csv Cloud Run service on failure.\n\nActual path on the **Sleak Gateway** service: `/embedding/csv`.",
         "operationId": "gateway_embedding_csv_embedding_csv_post",
         "requestBody": {
           "content": {
@@ -277,7 +282,7 @@
     "/gateway/embedding/pdf": {
       "post": {
         "summary": "Embed PDF File",
-        "description": "Accepts a multipart PDF upload plus datasource, organization and chatbot identifiers, then embeds it via the sleak-embedding-pdf Hatchet workflow (base64-encoding the file) and falls back to the embedding-pdf Cloud Run service on failure.\n\nActual path on the Sleak Gateway service: `/embedding/pdf`.",
+        "description": "Accepts a multipart PDF upload plus datasource, organization and chatbot identifiers, then embeds it via the sleak-embedding-pdf Hatchet workflow (base64-encoding the file) and falls back to the embedding-pdf Cloud Run service on failure.\n\nActual path on the **Sleak Gateway** service: `/embedding/pdf`.",
         "operationId": "gateway_embedding_pdf_embedding_pdf_post",
         "requestBody": {
           "content": {
@@ -317,7 +322,7 @@
     "/gateway/": {
       "get": {
         "summary": "Root Liveness Probe",
-        "description": "Returns a plain \"OK\" string confirming the gateway is running.\n\nActual path on the Sleak Gateway service: `/`.",
+        "description": "Returns a plain \"OK\" string confirming the gateway is running.\n\nActual path on the **Sleak Gateway** service: `/`.",
         "operationId": "gateway_root__get",
         "responses": {
           "200": {
@@ -337,7 +342,7 @@
     "/memory/add-messages": {
       "post": {
         "summary": "Append Messages To Session Memory",
-        "description": "Appends the provided messages to a session's PostgreSQL-checkpointed conversation history, deduplicating any messages whose id already exists in the session and sorting new messages by their timestamp before persisting.\n\nActual path on the Memory Service service: `/add-messages`.",
+        "description": "Appends the provided messages to a session's PostgreSQL-checkpointed conversation history, deduplicating any messages whose id already exists in the session and sorting new messages by their timestamp before persisting.\n\nActual path on the **Memory Service** service: `/add-messages`.",
         "operationId": "memory_append_memory_add_messages_post",
         "requestBody": {
           "content": {
@@ -379,7 +384,7 @@
     "/embedding_web/process": {
       "post": {
         "summary": "Scrape And Embed Web Pages",
-        "description": "Alias of /embedding_web. Scrapes a datasource's web pages and embeds them, dispatching queued pages for v2 datasources or preparing a job from the supplied URLs, then offloading to Hatchet or Cloud Run.\n\nActual path on the Embedding Web service: `/process`.",
+        "description": "Alias of /embedding_web. Scrapes a datasource's web pages and embeds them, dispatching queued pages for v2 datasources or preparing a job from the supplied URLs, then offloading to Hatchet or Cloud Run.\n\nActual path on the **Embedding Web** service: `/process`.",
         "operationId": "embedding_web_scrape_endpoint_process_post",
         "requestBody": {
           "content": {
@@ -421,7 +426,7 @@
     "/embedding_web/embedding_web": {
       "post": {
         "summary": "Scrape And Embed Web Pages",
-        "description": "Entry point for scraping a datasource's web pages and embedding them. For v2 datasources it dispatches the already-queued scrape_pages; otherwise it prepares a job from the supplied URLs (or the rescrape objects), then offloads to Hatchet or falls back to a Cloud Run job.\n\nActual path on the Embedding Web service: `/embedding_web`.",
+        "description": "Entry point for scraping a datasource's web pages and embedding them. For v2 datasources it dispatches the already-queued scrape_pages; otherwise it prepares a job from the supplied URLs (or the rescrape objects), then offloads to Hatchet or falls back to a Cloud Run job.\n\nActual path on the **Embedding Web** service: `/embedding_web`.",
         "operationId": "embedding_web_scrape_endpoint_embedding_web_post",
         "requestBody": {
           "content": {
@@ -463,7 +468,7 @@
     "/embedding_web/recurring": {
       "post": {
         "summary": "Reconcile And Re-Scrape Datasource",
-        "description": "Re-discovers a v2 datasource's live sources and reconciles them against stored pages: detecting added, deleted, and (via sitemap lastmod) changed URLs, purging removed pages and their embeddings, and dispatching a job for the pages that need reprocessing.\n\nActual path on the Embedding Web service: `/recurring`.",
+        "description": "Re-discovers a v2 datasource's live sources and reconciles them against stored pages: detecting added, deleted, and (via sitemap lastmod) changed URLs, purging removed pages and their embeddings, and dispatching a job for the pages that need reprocessing.\n\nActual path on the **Embedding Web** service: `/recurring`.",
         "operationId": "embedding_web_recurring_endpoint_recurring_post",
         "requestBody": {
           "content": {
@@ -507,7 +512,7 @@
     "/embedding_web/sitemap/delete": {
       "post": {
         "summary": "Delete Pages For A Source",
-        "description": "Deletes all scrape_pages and their Zilliz embeddings that belong to a given source_url within a datasource. Validates that the source_url exists in the datasource_type_config before deleting.\n\nActual path on the Embedding Web service: `/sitemap/delete`.",
+        "description": "Deletes all scrape_pages and their Zilliz embeddings that belong to a given source_url within a datasource. Validates that the source_url exists in the datasource_type_config before deleting.\n\nActual path on the **Embedding Web** service: `/sitemap/delete`.",
         "operationId": "embedding_web_sitemap_delete_endpoint_sitemap_delete_post",
         "requestBody": {
           "content": {
@@ -551,7 +556,7 @@
     "/embedding_web/sitemap/discover": {
       "post": {
         "summary": "Discover Crawlable Sources",
-        "description": "Discovers the sitemaps and crawlable sources for a website URL, optionally applying include/exclude page rules, and returns the grouped sources and URLs without scraping them.\n\nActual path on the Embedding Web service: `/sitemap/discover`.",
+        "description": "Discovers the sitemaps and crawlable sources for a website URL, optionally applying include/exclude page rules, and returns the grouped sources and URLs without scraping them.\n\nActual path on the **Embedding Web** service: `/sitemap/discover`.",
         "operationId": "embedding_web_sitemap_discover_endpoint_sitemap_discover_post",
         "requestBody": {
           "content": {
@@ -593,7 +598,7 @@
     "/embedding_web/sitemap/fetch": {
       "post": {
         "summary": "Fetch A Single Sitemap Source",
-        "description": "Fetches and parses a single sitemap URL, returning its source entry with the discovered URLs. Returns 422 for invalid sitemap content and 502 when the sitemap cannot be retrieved.\n\nActual path on the Embedding Web service: `/sitemap/fetch`.",
+        "description": "Fetches and parses a single sitemap URL, returning its source entry with the discovered URLs. Returns 422 for invalid sitemap content and 502 when the sitemap cannot be retrieved.\n\nActual path on the **Embedding Web** service: `/sitemap/fetch`.",
         "operationId": "embedding_web_sitemap_fetch_endpoint_sitemap_fetch_post",
         "requestBody": {
           "content": {
@@ -635,7 +640,7 @@
     "/embedding_web/embedding_web/cloud_run_fallback": {
       "post": {
         "summary": "Dispatch Job To Cloud Run",
-        "description": "Force-dispatches an already-prepared job directly to a Cloud Run job, bypassing Hatchet. Used as a fallback when Hatchet offload is unavailable or a queued job needs to be run on Cloud Run.\n\nActual path on the Embedding Web service: `/embedding_web/cloud_run_fallback`.",
+        "description": "Force-dispatches an already-prepared job directly to a Cloud Run job, bypassing Hatchet. Used as a fallback when Hatchet offload is unavailable or a queued job needs to be run on Cloud Run.\n\nActual path on the **Embedding Web** service: `/embedding_web/cloud_run_fallback`.",
         "operationId": "embedding_web_cloud_run_fallback_endpoint_embedding_web_cloud_run_fallback_post",
         "requestBody": {
           "content": {
@@ -679,7 +684,7 @@
     "/embedding_web/debug/hatchet_workers": {
       "get": {
         "summary": "Inspect Hatchet Worker Capacity",
-        "description": "Debug endpoint that lists Hatchet workers and reports the active job-serving workers along with their available and total slot counts. Returns hatchet_offload false when offload is disabled.\n\nActual path on the Embedding Web service: `/debug/hatchet_workers`.",
+        "description": "Debug endpoint that lists Hatchet workers and reports the active job-serving workers along with their available and total slot counts. Returns hatchet_offload false when offload is disabled.\n\nActual path on the **Embedding Web** service: `/debug/hatchet_workers`.",
         "operationId": "embedding_web_debug_hatchet_workers_debug_hatchet_workers_get",
         "responses": {
           "200": {
@@ -699,7 +704,7 @@
     "/evaluations_processor/process": {
       "post": {
         "summary": "Process Chat Evaluation",
-        "description": "Runs LangSmith trace and thread evaluations for a chat and pushes the results to Grafana.\n\nActual path on the Evaluations Processor service: `/process`.",
+        "description": "Runs LangSmith trace and thread evaluations for a chat and pushes the results to Grafana.\n\nActual path on the **Evaluations Processor** service: `/process`.",
         "operationId": "evaluations_processor_process_evaluation_process_post",
         "requestBody": {
           "content": {
@@ -739,7 +744,7 @@
     "/evaluations_processor/process_qa": {
       "post": {
         "summary": "Process QA Evaluation",
-        "description": "Queues a background QA evaluation for a single bot message, using the chat_id and message id from the provided record.\n\nActual path on the Evaluations Processor service: `/process_qa`.",
+        "description": "Queues a background QA evaluation for a single bot message, using the chat_id and message id from the provided record.\n\nActual path on the **Evaluations Processor** service: `/process_qa`.",
         "operationId": "evaluations_processor_process_qa_evaluation_process_qa_post",
         "requestBody": {
           "content": {
@@ -779,7 +784,7 @@
     "/queueing_evaluations/queueing/evaluations": {
       "post": {
         "summary": "Queue Chat Evaluation",
-        "description": "Schedules a delayed Cloud Tasks job that triggers the n8n evaluation webhook for a chat. Skips queueing when the chatbot's daily rate limit is reached, the chat is already evaluated, the chat has no llm_model, or the chat has 5 or fewer messages; any existing task for the same chat is replaced.\n\nActual path on the Chat Evaluation Queue service: `/queueing/evaluations`.",
+        "description": "Schedules a delayed Cloud Tasks job that triggers the n8n evaluation webhook for a chat. Skips queueing when the chatbot's daily rate limit is reached, the chat is already evaluated, the chat has no llm_model, or the chat has 5 or fewer messages; any existing task for the same chat is replaced.\n\nActual path on the **Chat Evaluation Queue** service: `/queueing/evaluations`.",
         "operationId": "queueing_evaluations_queue_chat_evaluation_queueing_evaluations_post",
         "requestBody": {
           "content": {
@@ -821,7 +826,7 @@
     "/queueing_chat_closed/queueing/close_chat": {
       "post": {
         "summary": "Close Or Delete Chat",
-        "description": "Deletes the chat when 'delete' is true, otherwise schedules a delayed Cloud Tasks job to close it.\n\nActual path on the Chat Queue service: `/queueing/close_chat`.",
+        "description": "Deletes the chat when 'delete' is true, otherwise schedules a delayed Cloud Tasks job to close it.\n\nActual path on the **Chat Queue** service: `/queueing/close_chat`.",
         "operationId": "queueing_chat_closed_queue_or_delete_chat_queueing_close_chat_post",
         "requestBody": {
           "content": {
@@ -864,14 +869,14 @@
           }
         },
         "tags": [
-          "Chat Queue (queueing_chat_closed)"
+          "Chat Queue"
         ]
       }
     },
     "/queueing_tags/queueing/tags": {
       "post": {
         "summary": "Queue Chat Tagging Task",
-        "description": "Schedules a Cloud Tasks job that calls the n8n webhook to tag the chat 15 minutes later. Any pending task previously queued for the same chat is deleted first, so the timer effectively resets on every call.\n\nActual path on the Chat Queue service: `/queueing/tags`.",
+        "description": "Schedules a Cloud Tasks job that calls the n8n webhook to tag the chat 15 minutes later. Any pending task previously queued for the same chat is deleted first, so the timer effectively resets on every call.\n\nActual path on the **Chat Queue** service: `/queueing/tags`.",
         "operationId": "queueing_tags_queue_chat_tag_queueing_tags_post",
         "requestBody": {
           "content": {
@@ -906,14 +911,14 @@
           }
         },
         "tags": [
-          "Chat Queue (queueing_tags)"
+          "Chat Queue"
         ]
       }
     },
     "/cleanup_services/purge_jobs": {
       "post": {
         "summary": "Purge Old Cloud Run Jobs",
-        "description": "Lists all Cloud Run jobs in the configured GCP project and region and deletes those whose executions have completed. When the job count reaches the internal threshold it deletes all completed jobs, otherwise it deletes only completed jobs older than the 7-day retention window. Requires the GCP_PROJECT_ID and GCP_REGION environment variables.\n\nActual path on the Cloud Run Job Execution Cleanup Service service: `/purge_jobs`.",
+        "description": "Lists all Cloud Run jobs in the configured GCP project and region and deletes those whose executions have completed. When the job count reaches the internal threshold it deletes all completed jobs, otherwise it deletes only completed jobs older than the 7-day retention window. Requires the GCP_PROJECT_ID and GCP_REGION environment variables.\n\nActual path on the **Cloud Run Job Execution Cleanup Service** service: `/purge_jobs`.",
         "operationId": "cleanup_services_purge_jobs_endpoint_purge_jobs_post",
         "responses": {
           "200": {

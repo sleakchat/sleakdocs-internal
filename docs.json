@@ -3,6 +3,9 @@
   "theme": "almond",
   "name": "Sleak internal docs",
   "custom_css": ["/custom.css"],
+  "seo": {
+    "indexing": "none"
+  },
   "colors": {
     "primary": "#8551FB",
     "light": "#A78BFA",
@@ -21,62 +24,75 @@
       },
       {
         "group": "Agent",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": ["POST /agent/webhook/message"]
+      },
+      {
+        "group": "Sleak Gateway",
+        "expanded": true,
+        "openapi": "openapi.json",
         "pages": [
-          "api-reference/agent/webhook-message"
+          "POST /gateway/embedding_xml_processor",
+          "POST /gateway/embedding_web",
+          "POST /gateway/queueing_evaluations",
+          "POST /gateway/evaluations_processor",
+          "POST /gateway/agent",
+          "POST /gateway/embedding/csv",
+          "POST /gateway/embedding/pdf",
+          "GET /gateway/"
         ]
       },
       {
-        "group": "Gateway",
-        "pages": [
-          "api-reference/gateway/agent",
-          "api-reference/gateway/embedding-web",
-          "api-reference/gateway/embedding-xml-processor",
-          "api-reference/gateway/embedding-csv",
-          "api-reference/gateway/embedding-pdf",
-          "api-reference/gateway/queueing-evaluations",
-          "api-reference/gateway/evaluations-processor",
-          "api-reference/gateway/root"
-        ]
-      },
-      {
-        "group": "Memory",
-        "pages": [
-          "api-reference/memory/add-messages"
-        ]
+        "group": "Memory Service",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": ["POST /memory/add-messages"]
       },
       {
         "group": "Embedding Web",
+        "expanded": true,
+        "openapi": "openapi.json",
         "pages": [
-          "api-reference/embedding-web/process",
-          "api-reference/embedding-web/scrape",
-          "api-reference/embedding-web/recurring",
-          "api-reference/embedding-web/sitemap-discover",
-          "api-reference/embedding-web/sitemap-fetch",
-          "api-reference/embedding-web/sitemap-delete",
-          "api-reference/embedding-web/cloud-run-fallback",
-          "api-reference/embedding-web/debug-hatchet-workers"
+          "POST /embedding_web/process",
+          "POST /embedding_web/embedding_web",
+          "POST /embedding_web/recurring",
+          "POST /embedding_web/sitemap/delete",
+          "POST /embedding_web/sitemap/discover",
+          "POST /embedding_web/sitemap/fetch",
+          "POST /embedding_web/embedding_web/cloud_run_fallback",
+          "GET /embedding_web/debug/hatchet_workers"
         ]
       },
       {
         "group": "Evaluations Processor",
-        "pages": [
-          "api-reference/evaluations-processor/process",
-          "api-reference/evaluations-processor/process-qa"
-        ]
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": ["POST /evaluations_processor/process", "POST /evaluations_processor/process_qa"]
       },
       {
-        "group": "Queueing",
-        "pages": [
-          "api-reference/queueing/queue-evaluation",
-          "api-reference/queueing/close-chat",
-          "api-reference/queueing/queue-tags"
-        ]
+        "group": "Chat Evaluation Queue",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": ["POST /queueing_evaluations/queueing/evaluations"]
       },
       {
-        "group": "Cleanup",
-        "pages": [
-          "api-reference/cleanup/purge-jobs"
-        ]
+        "group": "Chat Queue",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": ["POST /queueing_chat_closed/queueing/close_chat"]
+      },
+      {
+        "group": "Chat Queue",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": ["POST /queueing_tags/queueing/tags"]
+      },
+      {
+        "group": "Cloud Run Job Execution Cleanup Service",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": ["POST /cleanup_services/purge_jobs"]
       }
     ]
   },
