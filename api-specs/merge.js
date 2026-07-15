@@ -5,7 +5,30 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 const dir = __dirname;
-const index = JSON.parse(fs.readFileSync(path.join(dir, "index.json"), "utf8"));
+
+// Auto-discover all OpenAPI spec files in the directory
+const specFiles = fs.readdirSync(dir)
+  .filter((f) => f.endsWith(".json") && f !== "merge.js")
+  .map((f) => {
+    try {
+      const spec = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
+      if (!spec.openapi) return null;
+      return {
+        name: path.basename(f, ".json"),
+        title: spec.info?.title ?? path.basename(f, ".json"),
+        file: f,
+        url: spec.servers?.[0]?.url ?? null,
+        spec,
+      };
+    } catch {
+      return null;
+    }
+  })
+  .filter(Boolean);
+
+console.log(`Found ${specFiles.length} spec files: ${specFiles.map((s) => s.file).join(", ")}`);
+
+// ── 1. Merge all specs into one openapi.json ──────────────────────────────────
 
 const merged = {
   openapi: "3.1.0",
@@ -21,10 +44,8 @@ const merged = {
   components: { schemas: {} },
 };
 
-for (const entry of index) {
-  const spec = JSON.parse(
-    fs.readFileSync(path.join(dir, entry.file), "utf8")
-  );
+for (const entry of specFiles) {
+  const { spec } = entry;
 
   merged.tags.push({
     name: entry.title,
@@ -49,6 +70,7 @@ for (const entry of index) {
         description: op.description
           ? `${op.description}\n\nActual path on the **${entry.title}** service: \`${rawPath}\`.`
           : `Actual path on the **${entry.title}** service: \`${rawPath}\`.`,
+        ...(entry.url ? { servers: [{ url: entry.url }] } : {}),
       };
     }
 
@@ -66,37 +88,27 @@ for (const entry of index) {
 }
 
 fs.writeFileSync(path.join(ROOT, "openapi.json"), JSON.stringify(merged, null, 2));
-console.log(`✓ Merged ${index.length} specs → openapi.json (${Object.keys(merged.paths).length} paths, ${Object.keys(merged.components.schemas).length} schemas)`);
+console.log(`✓ Merged ${specFiles.length} specs → openapi.json (${Object.keys(merged.paths).length} paths, ${Object.keys(merged.components.schemas).length} schemas)`);
 
 // ── 2. Update docs.json navigation ───────────────────────────────────────────
 
 const docsPath = path.join(ROOT, "docs.json");
 const docs = JSON.parse(fs.readFileSync(docsPath, "utf8"));
 
-// Build service groups with expanded: true and endpoint pages as "METHOD /path" strings
-const serviceGroups = index.map((entry) => {
+const serviceGroups = specFiles.map((entry) => {
   const pages = Object.entries(merged.paths)
     .filter(([p]) => p.startsWith(`/${entry.name}/`) || p === `/${entry.name}`)
     .flatMap(([p, methods]) =>
       Object.keys(methods).map((method) => `${method.toUpperCase()} ${p}`)
     );
 
-  return {
-    group: entry.title,
-    expanded: true,
-    openapi: "openapi.json",
-    pages,
-  };
+  return { group: entry.title, expanded: true, openapi: "openapi.json", pages };
 }).filter((g) => g.pages.length > 0);
 
-// Keep the "Internal" group and rebuild the rest
 const internalGroup = docs.navigation.pages.find((g) => g.group === "Internal");
 docs.navigation.pages = [
   internalGroup,
-  {
-    group: "API Reference",
-    pages: ["api-reference/introduction"],
-  },
+  { group: "API Reference", pages: ["api-reference/introduction"] },
   ...serviceGroups,
 ];
 

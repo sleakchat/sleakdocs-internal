@@ -200,5 +200,10 @@
         "title": "ValidationError"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://memory.sleak.chat"
+    }
+  ]
 }

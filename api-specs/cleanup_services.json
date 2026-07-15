@@ -93,5 +93,10 @@
         "title": "PurgeResponse"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://cleanup-services.sleak.chat"
+    }
+  ]
 }

@@ -16,8 +16,13 @@
       "description": "A LangGraph-based API for flexible agent configuration with optional tools"
     },
     {
+<<<<<<< Updated upstream
       "name": "Memory Service",
       "description": "A service for managing conversation memory using PostgreSQL checkpointing"
+=======
+      "name": "Cloud Run Job Execution Cleanup Service",
+      "description": "A FastAPI application for purging old Cloud Run job executions"
+>>>>>>> Stashed changes
     },
     {
       "name": "Embedding Web",
@@ -28,15 +33,27 @@
       "description": "A FastAPI application for processing chat evaluations"
     },
     {
-      "name": "Chat Evaluation Queue",
-      "description": "A FastAPI application for managing chat evaluation queues with 15-minute timeout"
+      "name": "Sleak Gateway",
+      "description": ""
+    },
+    {
+      "name": "Memory Service",
+      "description": "A service for managing conversation memory using PostgreSQL checkpointing"
     },
     {
       "name": "Chat Closing Queue",
       "description": "A FastAPI application for managing chat queues with configurable timeout"
     },
     {
+<<<<<<< Updated upstream
       "name": "Chat Tagging Queue",
+=======
+      "name": "Chat Evaluation Queue",
+      "description": "A FastAPI application for managing chat evaluation queues with 15-minute timeout"
+    },
+    {
+      "name": "Chat Queue",
+>>>>>>> Stashed changes
       "description": "A FastAPI application for managing chat queues with 15-minute timeout"
     }
   ],
@@ -76,6 +93,7 @@
             }
           }
         },
+<<<<<<< Updated upstream
         "tags": [
           "Agent"
         ]
@@ -101,30 +119,38 @@
           },
           "required": true
         },
+=======
+        "tags": ["Agent"],
+        "servers": [
+          {
+            "url": "https://agent.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/cleanup_services/purge_jobs": {
+      "post": {
+        "summary": "Purge Old Cloud Run Jobs",
+        "description": "Lists all Cloud Run jobs in the configured GCP project and region and deletes those whose executions have completed. When the job count reaches the internal threshold it deletes all completed jobs, otherwise it deletes only completed jobs older than the 7-day retention window. Requires the GCP_PROJECT_ID and GCP_REGION environment variables.\n\nActual path on the **Cloud Run Job Execution Cleanup Service** service: `/purge_jobs`.",
+        "operationId": "cleanup_services_purge_jobs_endpoint_purge_jobs_post",
+>>>>>>> Stashed changes
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/memory_AppendMemoryResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/memory_HTTPValidationError"
+                  "$ref": "#/components/schemas/cleanup_services_PurgeResponse"
                 }
               }
             }
           }
         },
-        "tags": [
-          "Memory Service"
+        "tags": ["Cloud Run Job Execution Cleanup Service"],
+        "servers": [
+          {
+            "url": "https://cleanup-services.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -170,15 +196,67 @@
             }
           }
         },
-        "tags": [
-          "Embedding Web"
+        "tags": ["Embedding Web"],
+        "servers": [
+          {
+            "url": "https://embedding-web.sleak.chat"
+          }
         ]
+<<<<<<< Updated upstream
       },
       "servers": [
         {
           "url": "https://embedding-web-dev-849186242728.europe-west4.run.app"
         }
       ]
+=======
+      }
+    },
+    "/embedding_web/embedding_web": {
+      "post": {
+        "summary": "Scrape And Embed Web Pages",
+        "description": "Entry point for scraping a datasource's web pages and embedding them. For v2 datasources it dispatches the already-queued scrape_pages; otherwise it prepares a job from the supplied URLs (or the rescrape objects), then offloads to Hatchet or falls back to a Cloud Run job.\n\nActual path on the **Embedding Web** service: `/embedding_web`.",
+        "operationId": "embedding_web_scrape_endpoint_embedding_web_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/embedding_web_ScrapeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/embedding_web_ScrapeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/embedding_web_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Embedding Web"],
+        "servers": [
+          {
+            "url": "https://embedding-web.sleak.chat"
+          }
+        ]
+      }
+>>>>>>> Stashed changes
     },
     "/embedding_web/recurring": {
       "post": {
@@ -219,8 +297,11 @@
             }
           }
         },
-        "tags": [
-          "Embedding Web"
+        "tags": ["Embedding Web"],
+        "servers": [
+          {
+            "url": "https://embedding-web.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -268,8 +349,11 @@
             }
           }
         },
-        "tags": [
-          "Embedding Web"
+        "tags": ["Embedding Web"],
+        "servers": [
+          {
+            "url": "https://embedding-web.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -315,8 +399,11 @@
             }
           }
         },
-        "tags": [
-          "Embedding Web"
+        "tags": ["Embedding Web"],
+        "servers": [
+          {
+            "url": "https://embedding-web.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -362,8 +449,11 @@
             }
           }
         },
-        "tags": [
-          "Embedding Web"
+        "tags": ["Embedding Web"],
+        "servers": [
+          {
+            "url": "https://embedding-web.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -411,8 +501,11 @@
             }
           }
         },
-        "tags": [
-          "Embedding Web"
+        "tags": ["Embedding Web"],
+        "servers": [
+          {
+            "url": "https://embedding-web.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -436,8 +529,11 @@
             }
           }
         },
-        "tags": [
-          "Embedding Web"
+        "tags": ["Embedding Web"],
+        "servers": [
+          {
+            "url": "https://embedding-web.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -481,8 +577,11 @@
             }
           }
         },
-        "tags": [
-          "Evaluations Processor"
+        "tags": ["Evaluations Processor"],
+        "servers": [
+          {
+            "url": "https://evaluations-processor.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -526,8 +625,11 @@
             }
           }
         },
-        "tags": [
-          "Evaluations Processor"
+        "tags": ["Evaluations Processor"],
+        "servers": [
+          {
+            "url": "https://evaluations-processor.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -536,16 +638,296 @@
         }
       ]
     },
-    "/queueing_evaluations/queueing/evaluations": {
+    "/gateway/embedding_xml_processor": {
       "post": {
+<<<<<<< Updated upstream
         "summary": "Queue Chat Evaluation",
         "description": "Schedules a delayed Cloud Tasks job that triggers the n8n evaluation webhook for a chat. Skips queueing when the chatbot's daily rate limit is reached, the chat is already evaluated, the chat has no llm_model, or the chat has 5 or fewer messages; any existing task for the same chat is replaced.\n\nActual path on the Chat Evaluation Queue service: `/queueing/evaluations`.",
         "operationId": "queueing_evaluations_queue_chat_evaluation_queueing_evaluations_post",
+=======
+        "summary": "Process XML Sitemap Embeddings",
+        "description": "Forwards the raw JSON body to the XML embedding processor, running it via the sleak-embedding-xml Hatchet workflow and falling back to the embedding-xml Cloud Run service. See the Embedding XML Processor service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/embedding_xml_processor`.",
+        "operationId": "gateway_embedding_xml_processor_embedding_xml_processor_post",
+>>>>>>> Stashed changes
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/queueing_evaluations_EvaluationRequest"
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": ["Sleak Gateway"],
+        "servers": [
+          {
+            "url": "https://gateway.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/gateway/embedding_web": {
+      "post": {
+        "summary": "Queue Web Page Embedding",
+        "description": "Forwards the raw JSON body to the web embedding queue, running it via the sleak-embedding-web-queue Hatchet workflow and falling back to the embedding-web-queue Cloud Run service. See the Embedding Web service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/embedding_web`.",
+        "operationId": "gateway_embedding_web_embedding_web_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": ["Sleak Gateway"],
+        "servers": [
+          {
+            "url": "https://gateway.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/gateway/queueing_evaluations": {
+      "post": {
+        "summary": "Queue Evaluations",
+        "description": "Forwards the raw JSON body to the evaluation queueing service, running it via the sleak-queue-evaluation Hatchet workflow and falling back to the queue-evaluation Cloud Run service. See the Queueing Evaluations service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/queueing_evaluations`.",
+        "operationId": "gateway_queueing_evaluations_queueing_evaluations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": ["Sleak Gateway"],
+        "servers": [
+          {
+            "url": "https://gateway.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/gateway/evaluations_processor": {
+      "post": {
+        "summary": "Process Evaluations",
+        "description": "Forwards the raw JSON body to the evaluations processor, running it via the sleak-process-evaluation Hatchet workflow and falling back to the process-evaluation Cloud Run service. See the Evaluations Processor service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/evaluations_processor`.",
+        "operationId": "gateway_evaluations_processor_evaluations_processor_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": ["Sleak Gateway"],
+        "servers": [
+          {
+            "url": "https://gateway.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/gateway/agent": {
+      "post": {
+        "summary": "Process Agent Message",
+        "description": "Forwards the raw JSON body to the Agent service, running it via the sleak-agent-process-message Hatchet workflow (tagging chat_id, chatbot_id and organization_id as metadata) and falling back to the agent Cloud Run service at /webhook/message. See the Agent service for the request body schema.\n\nActual path on the **Sleak Gateway** service: `/agent`.",
+        "operationId": "gateway_agent_agent_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": ["Sleak Gateway"],
+        "servers": [
+          {
+            "url": "https://gateway.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/gateway/embedding/csv": {
+      "post": {
+        "summary": "Embed CSV File",
+        "description": "Accepts a multipart CSV upload plus datasource, organization and chatbot identifiers, then embeds it via the sleak-embedding-csv Hatchet workflow (base64-encoding the file) and falls back to the embedding-csv Cloud Run service on failure.\n\nActual path on the **Sleak Gateway** service: `/embedding/csv`.",
+        "operationId": "gateway_embedding_csv_embedding_csv_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/gateway_Body_embedding_csv_embedding_csv_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gateway_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Sleak Gateway"],
+        "servers": [
+          {
+            "url": "https://gateway.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/gateway/embedding/pdf": {
+      "post": {
+        "summary": "Embed PDF File",
+        "description": "Accepts a multipart PDF upload plus datasource, organization and chatbot identifiers, then embeds it via the sleak-embedding-pdf Hatchet workflow (base64-encoding the file) and falls back to the embedding-pdf Cloud Run service on failure.\n\nActual path on the **Sleak Gateway** service: `/embedding/pdf`.",
+        "operationId": "gateway_embedding_pdf_embedding_pdf_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/gateway_Body_embedding_pdf_embedding_pdf_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gateway_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Sleak Gateway"],
+        "servers": [
+          {
+            "url": "https://gateway.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/gateway/": {
+      "get": {
+        "summary": "Root Liveness Probe",
+        "description": "Returns a plain \"OK\" string confirming the gateway is running.\n\nActual path on the **Sleak Gateway** service: `/`.",
+        "operationId": "gateway_root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": ["Sleak Gateway"],
+        "servers": [
+          {
+            "url": "https://gateway.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/memory/add-messages": {
+      "post": {
+        "summary": "Append Messages To Session Memory",
+        "description": "Appends the provided messages to a session's PostgreSQL-checkpointed conversation history, deduplicating any messages whose id already exists in the session and sorting new messages by their timestamp before persisting.\n\nActual path on the **Memory Service** service: `/add-messages`.",
+        "operationId": "memory_append_memory_add_messages_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/memory_AppendMemoryRequest"
               }
             }
           },
@@ -557,7 +939,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/queueing_evaluations_EvaluationResponse"
+                  "$ref": "#/components/schemas/memory_AppendMemoryResponse"
                 }
               }
             }
@@ -567,14 +949,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/queueing_evaluations_HTTPValidationError"
+                  "$ref": "#/components/schemas/memory_HTTPValidationError"
                 }
               }
             }
           }
         },
-        "tags": [
-          "Chat Evaluation Queue"
+        "tags": ["Memory Service"],
+        "servers": [
+          {
+            "url": "https://memory.sleak.chat"
+          }
         ]
       },
       "servers": [
@@ -628,8 +1013,61 @@
             }
           }
         },
+<<<<<<< Updated upstream
         "tags": [
           "Chat Closing Queue"
+=======
+        "tags": ["Chat Queue"],
+        "servers": [
+          {
+            "url": "https://queueing-chat-closed.sleak.chat"
+          }
+        ]
+      }
+    },
+    "/queueing_evaluations/queueing/evaluations": {
+      "post": {
+        "summary": "Queue Chat Evaluation",
+        "description": "Schedules a delayed Cloud Tasks job that triggers the n8n evaluation webhook for a chat. Skips queueing when the chatbot's daily rate limit is reached, the chat is already evaluated, the chat has no llm_model, or the chat has 5 or fewer messages; any existing task for the same chat is replaced.\n\nActual path on the **Chat Evaluation Queue** service: `/queueing/evaluations`.",
+        "operationId": "queueing_evaluations_queue_chat_evaluation_queueing_evaluations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queueing_evaluations_EvaluationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queueing_evaluations_EvaluationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queueing_evaluations_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Chat Evaluation Queue"],
+        "servers": [
+          {
+            "url": "https://queueing-evaluations.sleak.chat"
+          }
+>>>>>>> Stashed changes
         ]
       },
       "servers": [
@@ -675,6 +1113,7 @@
             }
           }
         },
+<<<<<<< Updated upstream
         "tags": [
           "Chat Tagging Queue"
         ]
@@ -684,6 +1123,15 @@
           "url": "https://queueing-tags-dev-849186242728.europe-west4.run.app"
         }
       ]
+=======
+        "tags": ["Chat Queue"],
+        "servers": [
+          {
+            "url": "https://queueing-tags.sleak.chat"
+          }
+        ]
+      }
+>>>>>>> Stashed changes
     }
   },
   "components": {
@@ -727,11 +1175,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       },
       "agent_WebhookMessage": {
@@ -849,6 +1293,7 @@
         "type": "object",
         "title": "WebhookMessage"
       },
+<<<<<<< Updated upstream
       "memory_AppendMemoryRequest": {
         "properties": {
           "session_id": {
@@ -873,132 +1318,62 @@
         "title": "AppendMemoryRequest"
       },
       "memory_AppendMemoryResponse": {
+=======
+      "cleanup_services_HealthResponse": {
+>>>>>>> Stashed changes
         "properties": {
           "status": {
             "type": "string",
             "title": "Status",
-            "description": "Outcome of the append operation; 'success' when the request was processed"
-          },
-          "session_id": {
-            "type": "string",
-            "title": "Session Id",
-            "description": "Conversation thread identifier the messages were appended to"
-          },
-          "messages_appended": {
-            "type": "integer",
-            "title": "Messages Appended",
-            "description": "Number of messages received in the request payload, before deduplication"
-          },
-          "messages_ingested": {
-            "type": "integer",
-            "title": "Messages Ingested",
-            "description": "Number of new messages actually persisted after removing duplicates by id",
-            "default": 0
-          },
-          "total_messages": {
-            "type": "integer",
-            "title": "Total Messages",
-            "description": "Total number of messages stored in the session after this operation"
+            "description": "Service liveness indicator; returns 'healthy' when the application is running."
           }
         },
         "type": "object",
-        "required": [
-          "status",
-          "session_id",
-          "messages_appended",
-          "total_messages"
-        ],
-        "title": "AppendMemoryResponse"
+        "required": ["status"],
+        "title": "HealthResponse"
       },
-      "memory_HTTPValidationError": {
+      "cleanup_services_PurgeResponse": {
         "properties": {
-          "detail": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Overall outcome of the purge run: 'success' when no errors occurred, 'partial_success' when some jobs or executions failed, or 'no_jobs_found' when no jobs existed in the region."
+          },
+          "deleted_count": {
+            "type": "integer",
+            "title": "Deleted Count",
+            "description": "Number of Cloud Run jobs for which a deletion was successfully initiated."
+          },
+          "deleted_jobs": {
             "items": {
-              "$ref": "#/components/schemas/memory_ValidationError"
+              "type": "string"
             },
             "type": "array",
-            "title": "Detail"
-          }
-        },
-        "type": "object",
-        "title": "HTTPValidationError"
-      },
-      "memory_MessageObject": {
-        "properties": {
-          "role": {
-            "type": "string",
-            "title": "Role",
-            "description": "Role of the message: 'human', 'ai', or 'system'"
+            "title": "Deleted Jobs",
+            "description": "Fully qualified resource names of the Cloud Run jobs that were deleted."
           },
-          "content": {
-            "type": "string",
-            "title": "Content",
-            "description": "Content of the message",
-            "default": ""
-          },
-          "id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Id",
-            "description": "Optional message ID for deduplication"
-          },
-          "timestamp": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Timestamp",
-            "description": "Optional Unix timestamp of the message"
-          }
-        },
-        "type": "object",
-        "required": [
-          "role"
-        ],
-        "title": "MessageObject"
-      },
-      "memory_ValidationError": {
-        "properties": {
-          "loc": {
+          "errors": {
             "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
+              "type": "string"
             },
             "type": "array",
-            "title": "Location"
+            "title": "Errors",
+            "description": "Human-readable error messages for jobs or executions that could not be listed or deleted."
           },
-          "msg": {
-            "type": "string",
-            "title": "Message"
+          "total_jobs": {
+            "type": "integer",
+            "title": "Total Jobs",
+            "description": "Total number of jobs discovered in the region and considered as deletion candidates."
           },
-          "type": {
+          "purge_mode": {
             "type": "string",
-            "title": "Error Type"
+            "title": "Purge Mode",
+            "description": "Strategy used for this run: 'threshold_purge' deletes all completed jobs once the job count reaches the threshold, otherwise 'age_purge' deletes only completed jobs older than the retention window."
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError"
+        "required": ["status", "deleted_count", "deleted_jobs", "errors", "total_jobs", "purge_mode"],
+        "title": "PurgeResponse"
       },
       "embedding_web_CloudRunFallbackRequest": {
         "properties": {
@@ -1014,10 +1389,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "job_id",
-          "organization_id"
-        ],
+        "required": ["job_id", "organization_id"],
         "title": "CloudRunFallbackRequest"
       },
       "embedding_web_DiscoverPathGroup": {
@@ -1039,11 +1411,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "path",
-          "count",
-          "urls"
-        ],
+        "required": ["path", "count", "urls"],
         "title": "DiscoverPathGroup"
       },
       "embedding_web_DiscoverRules": {
@@ -1098,11 +1466,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "type",
-          "has_lastmod",
-          "paths"
-        ],
+        "required": ["type", "has_lastmod", "paths"],
         "title": "DiscoverSource"
       },
       "embedding_web_DiscoverUrlEntry": {
@@ -1124,9 +1488,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "url"
-        ],
+        "required": ["url"],
         "title": "DiscoverUrlEntry"
       },
       "embedding_web_HTTPValidationError": {
@@ -1151,9 +1513,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "datasource_id"
-        ],
+        "required": ["datasource_id"],
         "title": "RecurringRequest"
       },
       "embedding_web_ScrapeRequest": {
@@ -1215,9 +1575,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "datasource_id"
-        ],
+        "required": ["datasource_id"],
         "title": "ScrapeRequest"
       },
       "embedding_web_ScrapeResponse": {
@@ -1258,10 +1616,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "success",
-          "message"
-        ],
+        "required": ["success", "message"],
         "title": "ScrapeResponse"
       },
       "embedding_web_SitemapDeleteRequest": {
@@ -1278,10 +1633,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "datasource_id",
-          "source_url"
-        ],
+        "required": ["datasource_id", "source_url"],
         "title": "SitemapDeleteRequest"
       },
       "embedding_web_SitemapDiscoverRequest": {
@@ -1313,9 +1665,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "url"
-        ],
+        "required": ["url"],
         "title": "SitemapDiscoverRequest"
       },
       "embedding_web_SitemapDiscoverResponse": {
@@ -1340,10 +1690,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "website_url",
-          "sources"
-        ],
+        "required": ["website_url", "sources"],
         "title": "SitemapDiscoverResponse"
       },
       "embedding_web_SitemapGetRequest": {
@@ -1354,9 +1701,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "url"
-        ],
+        "required": ["url"],
         "title": "SitemapGetRequest"
       },
       "embedding_web_SitemapGetResponse": {
@@ -1366,9 +1711,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "source"
-        ],
+        "required": ["source"],
         "title": "SitemapGetResponse"
       },
       "embedding_web_ValidationError": {
@@ -1404,11 +1747,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       },
       "evaluations_processor_EvaluationRequest": {
@@ -1420,9 +1759,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "chat_id"
-        ],
+        "required": ["chat_id"],
         "title": "EvaluationRequest"
       },
       "evaluations_processor_HTTPValidationError": {
@@ -1447,9 +1784,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "title": "HealthResponse"
       },
       "evaluations_processor_QAEvaluationRequest": {
@@ -1527,70 +1862,62 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       },
-      "queueing_evaluations_EvaluationRequest": {
+      "gateway_Body_embedding_csv_embedding_csv_post": {
         "properties": {
-          "chat_id": {
+          "file": {
             "type": "string",
-            "title": "Chat Id",
-            "description": "Unique identifier for the chat"
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
           },
-          "visitor_id": {
+          "datasource_id": {
             "type": "string",
-            "title": "Visitor Id",
-            "description": "Unique identifier for the visitor"
+            "title": "Datasource Id"
+          },
+          "organization_id": {
+            "type": "string",
+            "title": "Organization Id"
           },
           "chatbot_id": {
             "type": "string",
-            "title": "Chatbot Id",
-            "description": "Unique identifier for the chatbot"
+            "title": "Chatbot Id"
           }
         },
         "type": "object",
-        "required": [
-          "chat_id",
-          "visitor_id",
-          "chatbot_id"
-        ],
-        "title": "EvaluationRequest"
+        "required": ["file", "datasource_id", "organization_id", "chatbot_id"],
+        "title": "Body_embedding_csv_embedding_csv_post"
       },
-      "queueing_evaluations_EvaluationResponse": {
+      "gateway_Body_embedding_pdf_embedding_pdf_post": {
         "properties": {
-          "status": {
+          "file": {
             "type": "string",
-            "title": "Status",
-            "description": "Outcome of the queueing request: 'success' when a task was created, or 'skipped' when the chat was rate-limited, already evaluated, missing an llm_model, or had 5 or fewer messages"
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
           },
-          "task_id": {
+          "datasource_id": {
             "type": "string",
-            "title": "Task Id",
-            "description": "Full Cloud Tasks resource name of the created evaluation task, or an empty string when the request was skipped"
+            "title": "Datasource Id"
           },
-          "chat_id": {
+          "organization_id": {
             "type": "string",
-            "title": "Chat Id",
-            "description": "Identifier of the chat this response refers to, echoed back from the request"
+            "title": "Organization Id"
+          },
+          "chatbot_id": {
+            "type": "string",
+            "title": "Chatbot Id"
           }
         },
         "type": "object",
-        "required": [
-          "status",
-          "task_id",
-          "chat_id"
-        ],
-        "title": "EvaluationResponse"
+        "required": ["file", "datasource_id", "organization_id", "chatbot_id"],
+        "title": "Body_embedding_pdf_embedding_pdf_post"
       },
-      "queueing_evaluations_HTTPValidationError": {
+      "gateway_HTTPValidationError": {
         "properties": {
           "detail": {
             "items": {
-              "$ref": "#/components/schemas/queueing_evaluations_ValidationError"
+              "$ref": "#/components/schemas/gateway_ValidationError"
             },
             "type": "array",
             "title": "Detail"
@@ -1599,21 +1926,7 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
-      "queueing_evaluations_HealthResponse": {
-        "properties": {
-          "status": {
-            "type": "string",
-            "title": "Status",
-            "description": "Service health indicator, always 'healthy' when the endpoint responds"
-          }
-        },
-        "type": "object",
-        "required": [
-          "status"
-        ],
-        "title": "HealthResponse"
-      },
-      "queueing_evaluations_ValidationError": {
+      "gateway_ValidationError": {
         "properties": {
           "loc": {
             "items": {
@@ -1646,11 +1959,144 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      },
+      "memory_AppendMemoryRequest": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "title": "Session Id",
+            "description": "Conversation thread identifier used as the checkpointer thread_id to scope stored messages"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/memory_MessageObject"
+            },
+            "type": "array",
+            "title": "Messages",
+            "description": "Array of message objects with role and content"
+          }
+        },
+        "type": "object",
+        "required": ["session_id", "messages"],
+        "title": "AppendMemoryRequest"
+      },
+      "memory_AppendMemoryResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Outcome of the append operation; 'success' when the request was processed"
+          },
+          "session_id": {
+            "type": "string",
+            "title": "Session Id",
+            "description": "Conversation thread identifier the messages were appended to"
+          },
+          "messages_appended": {
+            "type": "integer",
+            "title": "Messages Appended",
+            "description": "Number of messages received in the request payload, before deduplication"
+          },
+          "messages_ingested": {
+            "type": "integer",
+            "title": "Messages Ingested",
+            "description": "Number of new messages actually persisted after removing duplicates by id",
+            "default": 0
+          },
+          "total_messages": {
+            "type": "integer",
+            "title": "Total Messages",
+            "description": "Total number of messages stored in the session after this operation"
+          }
+        },
+        "type": "object",
+        "required": ["status", "session_id", "messages_appended", "total_messages"],
+        "title": "AppendMemoryResponse"
+      },
+      "memory_HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/memory_ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "memory_MessageObject": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "description": "Role of the message: 'human', 'ai', or 'system'"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "Content of the message",
+            "default": ""
+          },
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id",
+            "description": "Optional message ID for deduplication"
+          },
+          "timestamp": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timestamp",
+            "description": "Optional Unix timestamp of the message"
+          }
+        },
+        "type": "object",
+        "required": ["role"],
+        "title": "MessageObject"
+      },
+      "memory_ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       },
       "queueing_chat_closed_ChatResponse": {
@@ -1672,11 +2118,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status",
-          "task_id",
-          "chat_id"
-        ],
+        "required": ["status", "task_id", "chat_id"],
         "title": "ChatResponse"
       },
       "queueing_chat_closed_CloseChatRequest": {
@@ -1743,9 +2185,7 @@
         },
         "additionalProperties": true,
         "type": "object",
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "title": "CloseChatRequest"
       },
       "queueing_chat_closed_DeleteResponse": {
@@ -1768,10 +2208,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status",
-          "chat_id"
-        ],
+        "required": ["status", "chat_id"],
         "title": "DeleteResponse"
       },
       "queueing_chat_closed_HTTPValidationError": {
@@ -1796,9 +2233,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "title": "HealthResponse"
       },
       "queueing_chat_closed_ValidationError": {
@@ -1834,11 +2269,112 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      },
+      "queueing_evaluations_EvaluationRequest": {
+        "properties": {
+          "chat_id": {
+            "type": "string",
+            "title": "Chat Id",
+            "description": "Unique identifier for the chat"
+          },
+          "visitor_id": {
+            "type": "string",
+            "title": "Visitor Id",
+            "description": "Unique identifier for the visitor"
+          },
+          "chatbot_id": {
+            "type": "string",
+            "title": "Chatbot Id",
+            "description": "Unique identifier for the chatbot"
+          }
+        },
+        "type": "object",
+        "required": ["chat_id", "visitor_id", "chatbot_id"],
+        "title": "EvaluationRequest"
+      },
+      "queueing_evaluations_EvaluationResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Outcome of the queueing request: 'success' when a task was created, or 'skipped' when the chat was rate-limited, already evaluated, missing an llm_model, or had 5 or fewer messages"
+          },
+          "task_id": {
+            "type": "string",
+            "title": "Task Id",
+            "description": "Full Cloud Tasks resource name of the created evaluation task, or an empty string when the request was skipped"
+          },
+          "chat_id": {
+            "type": "string",
+            "title": "Chat Id",
+            "description": "Identifier of the chat this response refers to, echoed back from the request"
+          }
+        },
+        "type": "object",
+        "required": ["status", "task_id", "chat_id"],
+        "title": "EvaluationResponse"
+      },
+      "queueing_evaluations_HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/queueing_evaluations_ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "queueing_evaluations_HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Service health indicator, always 'healthy' when the endpoint responds"
+          }
+        },
+        "type": "object",
+        "required": ["status"],
+        "title": "HealthResponse"
+      },
+      "queueing_evaluations_ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       },
       "queueing_tags_ChatRequest": {
@@ -1860,11 +2396,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "chat_id",
-          "visitor_id",
-          "chatbot_id"
-        ],
+        "required": ["chat_id", "visitor_id", "chatbot_id"],
         "title": "ChatRequest"
       },
       "queueing_tags_ChatResponse": {
@@ -1886,11 +2418,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status",
-          "task_id",
-          "chat_id"
-        ],
+        "required": ["status", "task_id", "chat_id"],
         "title": "ChatResponse"
       },
       "queueing_tags_HTTPValidationError": {
@@ -1915,9 +2443,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "title": "HealthResponse"
       },
       "queueing_tags_ValidationError": {
@@ -1953,11 +2479,7 @@
           }
         },
         "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
+        "required": ["loc", "msg", "type"],
         "title": "ValidationError"
       }
     }

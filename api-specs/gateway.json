@@ -346,5 +346,10 @@
         "title": "ValidationError"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://gateway.sleak.chat"
+    }
+  ]
 }

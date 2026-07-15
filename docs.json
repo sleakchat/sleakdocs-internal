@@ -2,9 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "almond",
   "name": "Sleak internal docs",
-  "custom_css": [
-    "/custom.css"
-  ],
+  "custom_css": ["/custom.css"],
   "seo": {
     "indexing": "navigable"
   },
@@ -18,31 +16,23 @@
     "pages": [
       {
         "group": "Internal",
-        "pages": [
-          "index"
-        ]
+        "pages": ["index"]
       },
       {
         "group": "API Reference",
-        "pages": [
-          "api-reference/introduction"
-        ]
+        "pages": ["api-reference/introduction"]
       },
       {
         "group": "Agent",
         "expanded": true,
         "openapi": "openapi.json",
-        "pages": [
-          "POST /agent/webhook/message"
-        ]
+        "pages": ["POST /agent/webhook/message"]
       },
       {
-        "group": "Memory Service",
+        "group": "Cloud Run Job Execution Cleanup Service",
         "expanded": true,
         "openapi": "openapi.json",
-        "pages": [
-          "POST /memory/add-messages"
-        ]
+        "pages": ["POST /cleanup_services/purge_jobs"]
       },
       {
         "group": "Embedding Web",
@@ -50,6 +40,7 @@
         "openapi": "openapi.json",
         "pages": [
           "POST /embedding_web/process",
+          "POST /embedding_web/embedding_web",
           "POST /embedding_web/recurring",
           "POST /embedding_web/sitemap/delete",
           "POST /embedding_web/sitemap/discover",
@@ -62,34 +53,46 @@
         "group": "Evaluations Processor",
         "expanded": true,
         "openapi": "openapi.json",
+        "pages": ["POST /evaluations_processor/process", "POST /evaluations_processor/process_qa"]
+      },
+      {
+        "group": "Sleak Gateway",
+        "expanded": true,
+        "openapi": "openapi.json",
         "pages": [
-          "POST /evaluations_processor/process",
-          "POST /evaluations_processor/process_qa"
+          "POST /gateway/embedding_xml_processor",
+          "POST /gateway/embedding_web",
+          "POST /gateway/queueing_evaluations",
+          "POST /gateway/evaluations_processor",
+          "POST /gateway/agent",
+          "POST /gateway/embedding/csv",
+          "POST /gateway/embedding/pdf",
+          "GET /gateway/"
         ]
+      },
+      {
+        "group": "Memory Service",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": ["POST /memory/add-messages"]
+      },
+      {
+        "group": "Chat Queue",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": ["POST /queueing_chat_closed/queueing/close_chat"]
       },
       {
         "group": "Chat Evaluation Queue",
         "expanded": true,
         "openapi": "openapi.json",
-        "pages": [
-          "POST /queueing_evaluations/queueing/evaluations"
-        ]
+        "pages": ["POST /queueing_evaluations/queueing/evaluations"]
       },
       {
-        "group": "Chat Closing Queue",
+        "group": "Chat Queue",
         "expanded": true,
         "openapi": "openapi.json",
-        "pages": [
-          "POST /queueing_chat_closed/queueing/close_chat"
-        ]
-      },
-      {
-        "group": "Chat Tagging Queue",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /queueing_tags/queueing/tags"
-        ]
+        "pages": ["POST /queueing_tags/queueing/tags"]
       }
     ]
   },

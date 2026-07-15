@@ -716,5 +716,10 @@
         "title": "ValidationError"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://embedding-web.sleak.chat"
+    }
+  ]
 }

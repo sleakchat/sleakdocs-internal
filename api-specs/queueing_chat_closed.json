@@ -245,5 +245,10 @@
         "title": "ValidationError"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://queueing-chat-closed.sleak.chat"
+    }
+  ]
 }

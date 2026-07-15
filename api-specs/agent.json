@@ -208,5 +208,10 @@
         "title": "WebhookMessage"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://agent.sleak.chat"
+    }
+  ]
 }

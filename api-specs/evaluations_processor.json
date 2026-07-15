@@ -207,5 +207,10 @@
         "title": "ValidationError"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://evaluations-processor.sleak.chat"
+    }
+  ]
 }

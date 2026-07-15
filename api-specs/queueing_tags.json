@@ -168,5 +168,10 @@
         "title": "ValidationError"
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://queueing-tags.sleak.chat"
+    }
+  ]
 }
