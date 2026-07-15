@@ -16,10 +16,6 @@
       "description": "A LangGraph-based API for flexible agent configuration with optional tools"
     },
     {
-      "name": "Sleak Gateway",
-      "description": ""
-    },
-    {
       "name": "Memory Service",
       "description": "A service for managing conversation memory using PostgreSQL checkpointing"
     },
@@ -36,16 +32,12 @@
       "description": "A FastAPI application for managing chat evaluation queues with 15-minute timeout"
     },
     {
-      "name": "Chat Queue",
+      "name": "Chat Closing Queue",
       "description": "A FastAPI application for managing chat queues with configurable timeout"
     },
     {
-      "name": "Chat Queue",
+      "name": "Chat Tagging Queue",
       "description": "A FastAPI application for managing chat queues with 15-minute timeout"
-    },
-    {
-      "name": "Cloud Run Job Execution Cleanup Service",
-      "description": "A FastAPI application for purging old Cloud Run job executions"
     }
   ],
   "paths": {
@@ -90,297 +82,7 @@
       },
       "servers": [
         {
-          "url": "https://agent.sleak.chat"
-        }
-      ]
-    },
-    "/gateway/embedding_xml_processor": {
-      "post": {
-        "summary": "Process XML Sitemap Embeddings",
-        "description": "Forwards the raw JSON body to the XML embedding processor, running it via the sleak-embedding-xml Hatchet workflow and falling back to the embedding-xml Cloud Run service. See the Embedding XML Processor service for the request body schema.\n\nActual path on the Sleak Gateway service: `/embedding_xml_processor`.",
-        "operationId": "gateway_embedding_xml_processor_embedding_xml_processor_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "tags": [
-          "Sleak Gateway"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://gateway.sleak.chat"
-        }
-      ]
-    },
-    "/gateway/embedding_web": {
-      "post": {
-        "summary": "Queue Web Page Embedding",
-        "description": "Forwards the raw JSON body to the web embedding queue, running it via the sleak-embedding-web-queue Hatchet workflow and falling back to the embedding-web-queue Cloud Run service. See the Embedding Web service for the request body schema.\n\nActual path on the Sleak Gateway service: `/embedding_web`.",
-        "operationId": "gateway_embedding_web_embedding_web_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "tags": [
-          "Sleak Gateway"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://gateway.sleak.chat"
-        }
-      ]
-    },
-    "/gateway/queueing_evaluations": {
-      "post": {
-        "summary": "Queue Evaluations",
-        "description": "Forwards the raw JSON body to the evaluation queueing service, running it via the sleak-queue-evaluation Hatchet workflow and falling back to the queue-evaluation Cloud Run service. See the Queueing Evaluations service for the request body schema.\n\nActual path on the Sleak Gateway service: `/queueing_evaluations`.",
-        "operationId": "gateway_queueing_evaluations_queueing_evaluations_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "tags": [
-          "Sleak Gateway"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://gateway.sleak.chat"
-        }
-      ]
-    },
-    "/gateway/evaluations_processor": {
-      "post": {
-        "summary": "Process Evaluations",
-        "description": "Forwards the raw JSON body to the evaluations processor, running it via the sleak-process-evaluation Hatchet workflow and falling back to the process-evaluation Cloud Run service. See the Evaluations Processor service for the request body schema.\n\nActual path on the Sleak Gateway service: `/evaluations_processor`.",
-        "operationId": "gateway_evaluations_processor_evaluations_processor_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "tags": [
-          "Sleak Gateway"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://gateway.sleak.chat"
-        }
-      ]
-    },
-    "/gateway/agent": {
-      "post": {
-        "summary": "Process Agent Message",
-        "description": "Forwards the raw JSON body to the Agent service, running it via the sleak-agent-process-message Hatchet workflow (tagging chat_id, chatbot_id and organization_id as metadata) and falling back to the agent Cloud Run service at /webhook/message. See the Agent service for the request body schema.\n\nActual path on the Sleak Gateway service: `/agent`.",
-        "operationId": "gateway_agent_agent_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "tags": [
-          "Sleak Gateway"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://gateway.sleak.chat"
-        }
-      ]
-    },
-    "/gateway/embedding/csv": {
-      "post": {
-        "summary": "Embed CSV File",
-        "description": "Accepts a multipart CSV upload plus datasource, organization and chatbot identifiers, then embeds it via the sleak-embedding-csv Hatchet workflow (base64-encoding the file) and falls back to the embedding-csv Cloud Run service on failure.\n\nActual path on the Sleak Gateway service: `/embedding/csv`.",
-        "operationId": "gateway_embedding_csv_embedding_csv_post",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/gateway_Body_embedding_csv_embedding_csv_post"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/gateway_HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Sleak Gateway"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://gateway.sleak.chat"
-        }
-      ]
-    },
-    "/gateway/embedding/pdf": {
-      "post": {
-        "summary": "Embed PDF File",
-        "description": "Accepts a multipart PDF upload plus datasource, organization and chatbot identifiers, then embeds it via the sleak-embedding-pdf Hatchet workflow (base64-encoding the file) and falls back to the embedding-pdf Cloud Run service on failure.\n\nActual path on the Sleak Gateway service: `/embedding/pdf`.",
-        "operationId": "gateway_embedding_pdf_embedding_pdf_post",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/gateway_Body_embedding_pdf_embedding_pdf_post"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/gateway_HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Sleak Gateway"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://gateway.sleak.chat"
-        }
-      ]
-    },
-    "/gateway/": {
-      "get": {
-        "summary": "Root Liveness Probe",
-        "description": "Returns a plain \"OK\" string confirming the gateway is running.\n\nActual path on the Sleak Gateway service: `/`.",
-        "operationId": "gateway_root__get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "tags": [
-          "Sleak Gateway"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://gateway.sleak.chat"
+          "url": "https://agent-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -427,14 +129,14 @@
       },
       "servers": [
         {
-          "url": "https://memory.sleak.chat"
+          "url": "https://memory-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
     "/embedding_web/process": {
       "post": {
         "summary": "Scrape And Embed Web Pages",
-        "description": "Alias of /embedding_web. Scrapes a datasource's web pages and embeds them, dispatching queued pages for v2 datasources or preparing a job from the supplied URLs, then offloading to Hatchet or Cloud Run.\n\nActual path on the Embedding Web service: `/process`.",
+        "description": "Scrapes a datasource's web pages and embeds them, dispatching queued pages for v2 datasources or preparing a job from the supplied URLs, then offloading to Hatchet or falling back to a Cloud Run job.\n\nActual path on the Embedding Web service: `/process`.",
         "operationId": "embedding_web_scrape_endpoint_process_post",
         "requestBody": {
           "content": {
@@ -474,54 +176,7 @@
       },
       "servers": [
         {
-          "url": "https://embedding-web.sleak.chat"
-        }
-      ]
-    },
-    "/embedding_web/embedding_web": {
-      "post": {
-        "summary": "Scrape And Embed Web Pages",
-        "description": "Entry point for scraping a datasource's web pages and embedding them. For v2 datasources it dispatches the already-queued scrape_pages; otherwise it prepares a job from the supplied URLs (or the rescrape objects), then offloads to Hatchet or falls back to a Cloud Run job.\n\nActual path on the Embedding Web service: `/embedding_web`.",
-        "operationId": "embedding_web_scrape_endpoint_embedding_web_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/embedding_web_ScrapeRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/embedding_web_ScrapeResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/embedding_web_HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Embedding Web"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://embedding-web.sleak.chat"
+          "url": "https://embedding-web-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -570,7 +225,7 @@
       },
       "servers": [
         {
-          "url": "https://embedding-web.sleak.chat"
+          "url": "https://embedding-web-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -619,7 +274,7 @@
       },
       "servers": [
         {
-          "url": "https://embedding-web.sleak.chat"
+          "url": "https://embedding-web-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -666,7 +321,7 @@
       },
       "servers": [
         {
-          "url": "https://embedding-web.sleak.chat"
+          "url": "https://embedding-web-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -713,7 +368,7 @@
       },
       "servers": [
         {
-          "url": "https://embedding-web.sleak.chat"
+          "url": "https://embedding-web-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -762,7 +417,7 @@
       },
       "servers": [
         {
-          "url": "https://embedding-web.sleak.chat"
+          "url": "https://embedding-web-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -787,7 +442,7 @@
       },
       "servers": [
         {
-          "url": "https://embedding-web.sleak.chat"
+          "url": "https://embedding-web-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -832,7 +487,7 @@
       },
       "servers": [
         {
-          "url": "https://evaluations-processor.sleak.chat"
+          "url": "https://evaluations-processor-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -877,7 +532,7 @@
       },
       "servers": [
         {
-          "url": "https://evaluations-processor.sleak.chat"
+          "url": "https://evaluations-processor-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
@@ -924,14 +579,14 @@
       },
       "servers": [
         {
-          "url": "https://queueing-evaluations.sleak.chat"
+          "url": "https://queueing-evaluations-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
     "/queueing_chat_closed/queueing/close_chat": {
       "post": {
         "summary": "Close Or Delete Chat",
-        "description": "Deletes the chat when 'delete' is true, otherwise schedules a delayed Cloud Tasks job to close it.\n\nActual path on the Chat Queue service: `/queueing/close_chat`.",
+        "description": "Deletes the chat when 'delete' is true, otherwise schedules a delayed Cloud Tasks job to close it.\n\nActual path on the Chat Closing Queue service: `/queueing/close_chat`.",
         "operationId": "queueing_chat_closed_queue_or_delete_chat_queueing_close_chat_post",
         "requestBody": {
           "content": {
@@ -974,19 +629,19 @@
           }
         },
         "tags": [
-          "Chat Queue"
+          "Chat Closing Queue"
         ]
       },
       "servers": [
         {
-          "url": "https://queueing-chat-closed.sleak.chat"
+          "url": "https://queueing-chats-closed-dev-849186242728.europe-west4.run.app"
         }
       ]
     },
     "/queueing_tags/queueing/tags": {
       "post": {
         "summary": "Queue Chat Tagging Task",
-        "description": "Schedules a Cloud Tasks job that calls the n8n webhook to tag the chat 15 minutes later. Any pending task previously queued for the same chat is deleted first, so the timer effectively resets on every call.\n\nActual path on the Chat Queue service: `/queueing/tags`.",
+        "description": "Schedules a Cloud Tasks job that calls the n8n webhook to tag the chat 15 minutes later. Any pending task previously queued for the same chat is deleted first, so the timer effectively resets on every call.\n\nActual path on the Chat Tagging Queue service: `/queueing/tags`.",
         "operationId": "queueing_tags_queue_chat_tag_queueing_tags_post",
         "requestBody": {
           "content": {
@@ -1021,39 +676,12 @@
           }
         },
         "tags": [
-          "Chat Queue"
+          "Chat Tagging Queue"
         ]
       },
       "servers": [
         {
-          "url": "https://queueing-tags.sleak.chat"
-        }
-      ]
-    },
-    "/cleanup_services/purge_jobs": {
-      "post": {
-        "summary": "Purge Completed Cloud Run Jobs",
-        "description": "Lists all Cloud Run jobs in the configured GCP project and region and deletes those whose executions have completed. When the job count reaches the internal threshold it deletes all completed jobs, otherwise it deletes only completed jobs older than the 7-day retention window. Requires the GCP_PROJECT_ID and GCP_REGION environment variables.\n\nActual path on the Cloud Run Job Execution Cleanup Service service: `/purge_jobs`.",
-        "operationId": "cleanup_services_purge_jobs_endpoint_purge_jobs_post",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/cleanup_services_PurgeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Cloud Run Job Execution Cleanup Service"
-        ]
-      },
-      "servers": [
-        {
-          "url": "https://cleanup-services.sleak.chat"
+          "url": "https://queueing-tags-dev-849186242728.europe-west4.run.app"
         }
       ]
     }
@@ -1220,117 +848,6 @@
         "additionalProperties": true,
         "type": "object",
         "title": "WebhookMessage"
-      },
-      "gateway_Body_embedding_csv_embedding_csv_post": {
-        "properties": {
-          "file": {
-            "type": "string",
-            "contentMediaType": "application/octet-stream",
-            "title": "File"
-          },
-          "datasource_id": {
-            "type": "string",
-            "title": "Datasource Id"
-          },
-          "organization_id": {
-            "type": "string",
-            "title": "Organization Id"
-          },
-          "chatbot_id": {
-            "type": "string",
-            "title": "Chatbot Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "file",
-          "datasource_id",
-          "organization_id",
-          "chatbot_id"
-        ],
-        "title": "Body_embedding_csv_embedding_csv_post"
-      },
-      "gateway_Body_embedding_pdf_embedding_pdf_post": {
-        "properties": {
-          "file": {
-            "type": "string",
-            "contentMediaType": "application/octet-stream",
-            "title": "File"
-          },
-          "datasource_id": {
-            "type": "string",
-            "title": "Datasource Id"
-          },
-          "organization_id": {
-            "type": "string",
-            "title": "Organization Id"
-          },
-          "chatbot_id": {
-            "type": "string",
-            "title": "Chatbot Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "file",
-          "datasource_id",
-          "organization_id",
-          "chatbot_id"
-        ],
-        "title": "Body_embedding_pdf_embedding_pdf_post"
-      },
-      "gateway_HTTPValidationError": {
-        "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/gateway_ValidationError"
-            },
-            "type": "array",
-            "title": "Detail"
-          }
-        },
-        "type": "object",
-        "title": "HTTPValidationError"
-      },
-      "gateway_ValidationError": {
-        "properties": {
-          "loc": {
-            "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
-            },
-            "type": "array",
-            "title": "Location"
-          },
-          "msg": {
-            "type": "string",
-            "title": "Message"
-          },
-          "type": {
-            "type": "string",
-            "title": "Error Type"
-          },
-          "input": {
-            "title": "Input"
-          },
-          "ctx": {
-            "type": "object",
-            "title": "Context"
-          }
-        },
-        "type": "object",
-        "required": [
-          "loc",
-          "msg",
-          "type"
-        ],
-        "title": "ValidationError"
       },
       "memory_AppendMemoryRequest": {
         "properties": {
@@ -2442,70 +1959,6 @@
           "type"
         ],
         "title": "ValidationError"
-      },
-      "cleanup_services_HealthResponse": {
-        "properties": {
-          "status": {
-            "type": "string",
-            "title": "Status",
-            "description": "Service liveness indicator; returns 'healthy' when the application is running."
-          }
-        },
-        "type": "object",
-        "required": [
-          "status"
-        ],
-        "title": "HealthResponse"
-      },
-      "cleanup_services_PurgeResponse": {
-        "properties": {
-          "status": {
-            "type": "string",
-            "title": "Status",
-            "description": "Overall outcome of the purge run: 'success' when no errors occurred, 'partial_success' when some jobs or executions failed, or 'no_jobs_found' when no jobs existed in the region."
-          },
-          "deleted_count": {
-            "type": "integer",
-            "title": "Deleted Count",
-            "description": "Number of Cloud Run jobs for which a deletion was successfully initiated."
-          },
-          "deleted_jobs": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Deleted Jobs",
-            "description": "Fully qualified resource names of the Cloud Run jobs that were deleted."
-          },
-          "errors": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Errors",
-            "description": "Human-readable error messages for jobs or executions that could not be listed or deleted."
-          },
-          "total_jobs": {
-            "type": "integer",
-            "title": "Total Jobs",
-            "description": "Total number of jobs discovered in the region and considered as deletion candidates."
-          },
-          "purge_mode": {
-            "type": "string",
-            "title": "Purge Mode",
-            "description": "Strategy used for this run: 'threshold_purge' deletes all completed jobs once the job count reaches the threshold, otherwise 'age_purge' deletes only completed jobs older than the retention window."
-          }
-        },
-        "type": "object",
-        "required": [
-          "status",
-          "deleted_count",
-          "deleted_jobs",
-          "errors",
-          "total_jobs",
-          "purge_mode"
-        ],
-        "title": "PurgeResponse"
       }
     }
   }

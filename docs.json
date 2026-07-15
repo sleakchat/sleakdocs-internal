@@ -37,21 +37,6 @@
         ]
       },
       {
-        "group": "Sleak Gateway",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /gateway/embedding_xml_processor",
-          "POST /gateway/embedding_web",
-          "POST /gateway/queueing_evaluations",
-          "POST /gateway/evaluations_processor",
-          "POST /gateway/agent",
-          "POST /gateway/embedding/csv",
-          "POST /gateway/embedding/pdf",
-          "GET /gateway/"
-        ]
-      },
-      {
         "group": "Memory Service",
         "expanded": true,
         "openapi": "openapi.json",
@@ -65,7 +50,6 @@
         "openapi": "openapi.json",
         "pages": [
           "POST /embedding_web/process",
-          "POST /embedding_web/embedding_web",
           "POST /embedding_web/recurring",
           "POST /embedding_web/sitemap/delete",
           "POST /embedding_web/sitemap/discover",
@@ -92,7 +76,7 @@
         ]
       },
       {
-        "group": "Chat Queue",
+        "group": "Chat Closing Queue",
         "expanded": true,
         "openapi": "openapi.json",
         "pages": [
@@ -100,19 +84,11 @@
         ]
       },
       {
-        "group": "Chat Queue",
+        "group": "Chat Tagging Queue",
         "expanded": true,
         "openapi": "openapi.json",
         "pages": [
           "POST /queueing_tags/queueing/tags"
-        ]
-      },
-      {
-        "group": "Cloud Run Job Execution Cleanup Service",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /cleanup_services/purge_jobs"
         ]
       }
     ]
