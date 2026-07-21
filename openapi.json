@@ -1058,28 +1058,6 @@
         ],
         "title": "DiscoverPathGroup"
       },
-      "embedding_web_DiscoverRules": {
-        "properties": {
-          "include": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Include",
-            "default": []
-          },
-          "exclude": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Exclude",
-            "default": []
-          }
-        },
-        "type": "object",
-        "title": "DiscoverRules"
-      },
       "embedding_web_DiscoverSource": {
         "properties": {
           "type": {
@@ -1318,13 +1296,12 @@
           },
           "page_rules": {
             "anyOf": [
-              {
-                "$ref": "#/components/schemas/embedding_web_DiscoverRules"
-              },
+              {},
               {
                 "type": "null"
               }
-            ]
+            ],
+            "title": "Page Rules"
           }
         },
         "type": "object",
@@ -1347,11 +1324,7 @@
             "title": "Sources"
           },
           "page_rules": {
-            "$ref": "#/components/schemas/embedding_web_DiscoverRules",
-            "default": {
-              "include": [],
-              "exclude": []
-            }
+            "title": "Page Rules"
           }
         },
         "type": "object",
