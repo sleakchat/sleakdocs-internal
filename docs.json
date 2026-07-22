@@ -52,6 +52,7 @@
         "pages": [
           "POST /embedding_web/process",
           "POST /embedding_web/recurring",
+          "POST /embedding_web/filters",
           "POST /embedding_web/delete/source",
           "POST /embedding_web/delete/page",
           "POST /embedding_web/sitemap/discover",

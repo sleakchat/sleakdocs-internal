@@ -244,6 +244,61 @@
         }
       ]
     },
+    "/embedding_web/filters": {
+      "post": {
+        "summary": "Re-Apply Page Rules To Existing Pages",
+        "description": "Runs the datasource's stored page_rules over its existing scrape_pages: re-queues pages that are currently excluded but now pass the rules, and excludes pages that should be filtered out (purging their embeddings). If any pages were re-queued, dispatches a job to scrape them.\n\nActual path on the Embedding Web service: `/filters`.",
+        "operationId": "embedding_web_filters_endpoint_filters_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/embedding_web_FiltersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Filters Endpoint Filters Post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Datasource not found."
+          },
+          "500": {
+            "description": "Unexpected error while re-applying the page rules."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/embedding_web_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Embedding Web"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://embedding-web-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
     "/embedding_web/delete/source": {
       "post": {
         "summary": "Delete Pages For Sources",
@@ -1118,6 +1173,20 @@
           "url"
         ],
         "title": "DiscoverUrlEntry"
+      },
+      "embedding_web_FiltersRequest": {
+        "properties": {
+          "datasource_id": {
+            "type": "string",
+            "title": "Datasource Id",
+            "description": "ID of the v2 data_source whose stored page_rules should be re-applied to its existing scrape_pages."
+          }
+        },
+        "type": "object",
+        "required": [
+          "datasource_id"
+        ],
+        "title": "FiltersRequest"
       },
       "embedding_web_HTTPValidationError": {
         "properties": {
