@@ -1180,6 +1180,12 @@
             "type": "string",
             "title": "Datasource Id",
             "description": "ID of the v2 data_source whose stored page_rules should be re-applied to its existing scrape_pages."
+          },
+          "html_filters": {
+            "type": "boolean",
+            "title": "Html Filters",
+            "description": "When true, re-queue ALL pages that pass the page_rules (not just currently-excluded ones) so they are reprocessed with the changed html_filters; their existing embeddings are purged first.",
+            "default": false
           }
         },
         "type": "object",
