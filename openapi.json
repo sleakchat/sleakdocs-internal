@@ -38,6 +38,14 @@
     {
       "name": "Chat Tagging Queue",
       "description": "A FastAPI application for managing chat queues with 15-minute timeout"
+    },
+    {
+      "name": "Clustering",
+      "description": "Topic modelling for closed support conversations: per-chat inference, seeding, and daily discovery."
+    },
+    {
+      "name": "Clustering Queue",
+      "description": "Schedules a delayed, deduped Cloud Task that sends a closed chat to the clustering service."
     }
   ],
   "paths": {
@@ -769,6 +777,224 @@
       "servers": [
         {
           "url": "https://queueing-tags-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
+    "/clustering/process": {
+      "post": {
+        "summary": "Cluster One Closed Chat",
+        "description": "Inline centroid inference for a single closed chat delivered by the clustering Cloud Task.\n\nActual path on the Clustering service: `/process`.",
+        "operationId": "clustering_process_chat_process_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clustering_ClusterProcessRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "500": {
+            "description": "Transient error; Cloud Tasks should retry."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
+    "/clustering/initialise": {
+      "post": {
+        "summary": "Seed Topic Model",
+        "description": "Dispatches a Cloud Run Job that seeds the topic model from the last N conversations of an organization.\n\nActual path on the Clustering service: `/initialise`.",
+        "operationId": "clustering_initialise_initialise_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clustering_InitialiseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
+    "/clustering/discover": {
+      "post": {
+        "summary": "Daily Discovery Pass",
+        "description": "Dispatches a Cloud Run Job that re-checks outliers and discovers emerging topics for an organization.\n\nActual path on the Clustering service: `/discover`.",
+        "operationId": "clustering_discover_discover_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clustering_DiscoverRequest",
+                "default": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
+    "/clustering/healthz": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "clustering_healthz_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HealthResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ],
+        "description": "Actual path on the Clustering service: `/healthz`."
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
+    "/queueing-clustering/queueing/clustering": {
+      "post": {
+        "summary": "Queue Chat Clustering Task",
+        "description": "Schedules a Cloud Task that calls the clustering service /process for a closed chat. Any pending task for the same chat is deleted first, so the timer resets on every call.\n\nActual path on the Clustering Queue service: `/queueing/clustering`.",
+        "operationId": "queueing-clustering_queue_chat_clustering_queueing_clustering_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/queueing-clustering_ChatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queueing-clustering_ChatResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error while queueing the clustering task"
+          },
+          "503": {
+            "description": "Task queue is not available"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/queueing-clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering Queue"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://queueing-clustering-dev-849186242728.europe-west4.run.app"
         }
       ]
     }
@@ -2007,6 +2233,324 @@
         "title": "HealthResponse"
       },
       "queueing_tags_ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "clustering_ClusterProcessRequest": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Identifier of the closed chat to cluster."
+          },
+          "organization_id": {
+            "type": "string",
+            "title": "Organization Id",
+            "description": "Owning organization of the chat."
+          },
+          "chatbot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chatbot Id",
+            "description": "Chatbot handling the chat."
+          },
+          "visitor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visitor Id",
+            "description": "Visitor associated with the chat."
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "id",
+          "organization_id"
+        ],
+        "title": "ClusterProcessRequest"
+      },
+      "clustering_DiscoverRequest": {
+        "properties": {
+          "organization_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Organization Id",
+            "description": "Org to discover for; omit (send {}) to fan out over ALL orgs with an active model in one job."
+          },
+          "chatbot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chatbot Id",
+            "description": "Optional chatbot scope; null means org-wide."
+          }
+        },
+        "type": "object",
+        "title": "DiscoverRequest"
+      },
+      "clustering_HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/clustering_ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "clustering_HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Liveness status of the service."
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "HealthResponse"
+      },
+      "clustering_InitialiseRequest": {
+        "properties": {
+          "organization_id": {
+            "type": "string",
+            "title": "Organization Id",
+            "description": "Organization whose topic model should be seeded."
+          },
+          "chatbot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chatbot Id",
+            "description": "Optional chatbot scope; null means org-wide."
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Number of recent conversations to seed from.",
+            "default": 1000
+          },
+          "reset": {
+            "type": "boolean",
+            "title": "Reset",
+            "description": "Clear the org's existing topic model before seeding (default true).",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "organization_id"
+        ],
+        "title": "InitialiseRequest"
+      },
+      "clustering_ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "queueing-clustering_ChatRequest": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Identifier of the closed chat to cluster."
+          },
+          "organization_id": {
+            "type": "string",
+            "title": "Organization Id",
+            "description": "Owning organization of the chat."
+          },
+          "chatbot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chatbot Id",
+            "description": "Chatbot handling the chat."
+          },
+          "visitor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visitor Id",
+            "description": "Visitor associated with the chat."
+          }
+        },
+        "additionalProperties": true,
+        "type": "object",
+        "required": [
+          "id",
+          "organization_id"
+        ],
+        "title": "ChatRequest"
+      },
+      "queueing-clustering_ChatResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Outcome of the queueing operation."
+          },
+          "task_id": {
+            "type": "string",
+            "title": "Task Id",
+            "description": "Cloud Tasks resource name of the created task."
+          },
+          "chat_id": {
+            "type": "string",
+            "title": "Chat Id",
+            "description": "Identifier of the chat the queued task belongs to."
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "task_id",
+          "chat_id"
+        ],
+        "title": "ChatResponse"
+      },
+      "queueing-clustering_HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/queueing-clustering_ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "queueing-clustering_HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Service health indicator."
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "HealthResponse"
+      },
+      "queueing-clustering_ValidationError": {
         "properties": {
           "loc": {
             "items": {
