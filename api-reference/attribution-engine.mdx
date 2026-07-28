@@ -1,0 +1,676 @@
+---
+title: 'Marketing Attribution Engine'
+description: 'Complete guide to Sleak.chat marketing attribution & conversion tracking'
+---
+
+# Overview
+
+Sleak's attribution engine tracks the complete customer journey from first ad click through signup, product usage (activation), and revenue. We use **company-level attribution** for B2B accuracy and **hybrid tracking** (server + browser) for maximum coverage & accuracy.
+
+```mermaid
+flowchart TD
+    subgraph browserGroup["Browser (client-side)"]
+        adClick["Ad click: fbclid, gclid, UTMs captured"]
+        cookie["Stored in cookie (365 days)"]
+        trackJs["session.js fires track()"]
+        adClick --> cookie --> trackJs
+    end
+
+    subgraph eventsGroup["Event types"]
+        leadEvent["Lead: demo form, Calendly"]
+        signupEvent["Signup: trial, account creation"]
+        activationEvent["Activation: agent, datasource, widget"]
+        revenueEvent["Revenue: Stripe payment, subscription"]
+    end
+
+    subgraph serverGroup["Server (server-side)"]
+        subgraph dbGroup["Database"]
+            database[("company_groups, tracking_events, click_ids")]
+        end
+        eventsApi["Events API"]
+        resolve["Resolve company_group"]
+        enrich["Enrich: IP, geo, hashed identity"]
+        report["Report conversion"]
+        eventsApi --> resolve --> enrich --> report
+        resolve <--> database
+        enrich <--> database
+    end
+
+    subgraph platformsGroup["Ad platforms"]
+        direction LR
+        metaPlatform["Meta:<br/>CAPI + Pixel"]
+        googlePlatform["Google:<br/>Conversions + gtag"]
+        linkedinPlatform["LinkedIn:<br/>API + tag (later)"]
+    end
+
+    backendWebhook["Backend webhook: Stripe, Supabase (activation)"]
+
+    trackJs --> leadEvent
+    trackJs --> signupEvent
+    backendWebhook --> activationEvent
+    backendWebhook --> revenueEvent
+
+    leadEvent --> eventsApi
+    signupEvent --> eventsApi
+    activationEvent --> eventsApi
+    revenueEvent --> eventsApi
+
+    report --> platformsGroup
+
+    trackJs -.->|pixel/gtag fires if reported| platformsGroup
+
+    classDef browserStyle fill:#DBEAFE,stroke:#3B82F6,color:#1E3A8A
+    classDef eventStyle fill:#EDE9FE,stroke:#8551FB,color:#4C1D95
+    classDef serverStyle fill:#FEF3C7,stroke:#F59E0B,color:#78350F
+    classDef platformStyle fill:#D1FAE5,stroke:#10B981,color:#064E3B
+    classDef dbStyle fill:#F3F4F6,stroke:#6B7280,color:#111827
+    classDef futureStyle fill:#F3F4F6,stroke:#9CA3AF,color:#6B7280,stroke-dasharray:5 5
+
+    class adClick,cookie,trackJs browserStyle
+    class leadEvent,signupEvent,activationEvent,revenueEvent,backendWebhook eventStyle
+    class eventsApi,resolve,enrich,report serverStyle
+    class metaPlatform,googlePlatform platformStyle
+    class linkedinPlatform futureStyle
+    class database dbStyle
+
+    style browserGroup fill:#EFF6FF,stroke:#93C5FD
+    style eventsGroup fill:#F5F3FF,stroke:#C4B5FD
+    style serverGroup fill:#FFFBEB,stroke:#FDE68A
+    style platformsGroup fill:#ECFDF5,stroke:#6EE7B7
+    style dbGroup fill:#F3F4F6,stroke:#6B7280
+```
+
+### Key principles
+
+<CardGroup cols={2}>
+  <Card title='Company-level attribution' icon='building'>
+    We track companies, not individuals. Multiple employees from Acme Corp = one customer acquisition.
+  </Card>
+  <Card title='Strict reporting rules' icon='layers-2'>
+    One lead per visitor, one signup per company. Prevents inflated conversion metrics.
+  </Card>
+  <Card title='Hybrid tracking' icon='git-branch'>
+    Server-side for accuracy (no ad blockers), client-side for browser signals (cookies, device data).
+  </Card>
+  <Card title='Multi-touch attribution' icon='mouse-pointer-click'>
+    We store ALL click IDs. If someone clicks Meta ad then Google ad, both platforms get attribution credit.
+  </Card>
+</CardGroup>
+
+### Event types
+
+We track four conversion event types, each with specific business logic:
+
+| Event Type | Trigger | Reporting Rule |
+|------------|---------|---------------------|
+| **Lead** | Demo form, Calendly booking, contact form, gated content | Once per visitor (same browser). Different employees = separate leads. |
+| **Signup** | Trial signup, account creation | Once per company. Only when owner creates their first workspace. Team members not counted. |
+| **Activation** | First agent, datasource, widget install, qualified lead | Reported for enrichment only (not conversion goal). |
+| **Revenue** | Stripe payment, subscription created/renewed | Reported for enrichment only (not conversion goal). Includes revenue amount. |
+
+<Info>
+**Key Distinction:** Lead and Signup events are campaign conversion goals. Activation and Revenue events enrich pixel data for algorithmic learning but don't inflate metrics.
+</Info>
+
+---
+
+# Reporting logic deep dive
+
+Not every event generates an ad platform conversion. Reporting rules restrict this to once per visitor (leads) and once per company (signups), keeping attribution data clean while still sending rich signals to Meta and Google's algorithms. When we do report, we credit the most recent ad click within each platform's attribution window.
+
+### Typical user journey & attribution flow
+
+<Steps>
+  <Step title="Ad click">
+    User clicks Meta ad → `fbclid` captured in URL → stored in cookie (`slk_src`, 365 days)
+    
+    **What's captured:**
+    - Platform click ID (fbclid, gclid, msclkid)
+    - UTM parameters
+    - gad_source, keyword
+    - Landing page URL
+    - Anonymous ID (generated, 365d cookie)
+  </Step>
+
+  <Step title="Anonymous browsing">
+    User browses site → no events sent, just cookies persisted
+  </Step>
+
+  <Step title="Lead submission">
+    User fills demo form → Lead event fires
+    
+    **What happens:**
+    1. Browser sends: name, email, phone, click IDs, anonymous ID
+    2. Server extracts domain from email → resolves to company group
+    3. Backfills: stamps company group onto earlier anonymous browsing
+    4. Checks: has this `anonymous_id` reported a lead before?
+    5. If no: reports to Meta/Google with enriched data
+    6. If yes: stores in DB only, no ad platform report
+    7. Browser fires pixels (if reported)
+    
+    **Company group created:**
+    - Business domain (`acme.com`) → group by domain
+    - Consumer domain (`gmail.com`) → group by full email (`consumer:john@gmail.com`)
+  </Step>
+
+  <Step title="Signup">
+    User creates account → Signup event fires
+    
+    **What happens:**
+    1. Backend sends: user ID, email, click IDs
+    2. Server looks up member/org from user ID, resolves to company group
+    3. Checks: Is user owner? First org? First signup from this company?
+    4. If all yes: reports to Meta/Google
+    5. If any no: stores in DB only
+    6. Backfills: connects earlier lead events to this member ID
+  </Step>
+
+  <Step title="Product usage">
+    User creates first agent → Activation event fires
+    
+    **Sent to ad platforms as micro conversions for enrichment purposes**, not counted as conversion goal
+  </Step>
+
+  <Step title="Revenue">
+    Stripe webhook → Revenue event fires
+    
+    **Sent to ad platforms with revenue data** as micro conversions for enrichment purposes, helps optimize for value
+  </Step>
+</Steps>
+
+
+
+
+
+
+### Company group logic
+
+#### What is a company group?
+
+A `company_group` is our core attribution entity. It always represents one company.
+
+**Key concept:** Multiple organizations and users can belong to one company group.
+
+#### Grouping rules
+
+<Tabs>
+  <Tab title="Business domains">
+    <Card>
+    **Rule:** Group by email domain
+    
+    **Example:**
+    - `john@acme.com` → Company Group: `acme.com`
+    - `sarah@acme.com` → Same Company Group: `acme.com`
+    - `mike@techcorp.io` → Different Company Group: `techcorp.io`
+    
+    **Why:** Acme Corp is one customer, not three.
+    </Card>
+  </Tab>
+
+  <Tab title="Consumer domains">
+    <Card>
+    <Info>
+    We maintain a consumer domain email blacklist - these domains are **excluded from company grouping.**
+    </Info>
+
+    List of ~65 free/personal email domains sourced from the [mailchecker](https://github.com/FGRibreau/mailchecker) public list.
+
+    Before grouping a lead or signup by email domain, we check this list first. If the domain matches, we skip domain-based grouping entirely and use the **full email address** as the grouping key instead (`consumer:{email}`) - never just the domain.
+
+    **Rule:** Group by full email address, not domain
+
+    **Example:**
+    - `john@gmail.com` → Company Group: `consumer:john@gmail.com`
+    - `sarah@gmail.com` → Different Company Group: `consumer:sarah@gmail.com`
+    
+    **Why:** Without this check, every Gmail/Outlook/Yahoo user in the world would get lumped into one giant fake "company" by domain. This list exists purely to prevent that - it has nothing to do with spam/quality filtering.
+    </Card>
+  </Tab>
+
+  <Tab title="Organization mapping">
+    <Card>
+    Once a user signs up:
+    - Organization ID → mapped to Company Group
+    - All future events from that org → same Company Group
+    - New team members joining → inherit Company Group
+    
+    **Attio integration (future):**
+    Will use Attio's company lookup to merge duplicate groups and resolve by actual company record.
+    </Card>
+  </Tab>
+</Tabs>
+
+### Reporting rules
+
+Two separate event deduplication layers exist, and they solve different problems:
+
+- **Idempotency** (technical): every event carries an `idempotency_key`. If the exact same request arrives twice (e.g. a network retry), it's stored once and never processed again. This has nothing to do with business logic. On the client as well, the idempotency_key [ **typically the event_id** ] serves as a deduplication identifier for the ad platforms.
+- **Reporting rules** (business logic): once an event is stored, we still decide *whether it counts as a reportable conversion* - once per visitor for leads, once per company for signups. This is what prevents inflated metrics, not idempotency.
+
+  | Event Type | Reporting Rule | Purpose |
+  |------------|----------------|---------|
+  | **Lead** | Once per visitor | Prevents duplicate leads from same browser (form resubmits, typo corrections) |
+  | **Signup** | Once per company (owner only, first org only) | Ensures 1 customer = 1 conversion (no inflation from team growth or multi-org users) |
+  | **Activation events** | Always (when org has first-time owner) | Pixel enrichment/signals only (not campaign conversion goals) |
+  | **Revenue events** | Always (when org has first-time owner) | Pixel enrichment/signals only (not campaign conversion goals) |
+
+### Signups through sales
+
+Sales-assisted signups are subject to excemptions to preserve accurate 
+attribution.
+
+<Warning>
+**Internal team members (sales, support, admin) must mark their browsers** to prevent false attribution. See setup below.
+</Warning>
+
+**One-time setup (sales, support, admin):**
+
+Visit this URL in your work browser: https://data.sleak.chat/mark-internal-browser
+
+Your click IDs will be excluded from attribution. Re-visit if you clear browser data.
+
+<Tabs>
+  <Tab title="With existing lead">
+    <Card>
+    **Scenario:** You create a signup for someone who previously submitted a lead form.
+
+    <Info>
+    **Why mark your browser?** Prevents your own click IDs from overwriting Jane's original attribution if you recently clicked a Sleak ad.
+    </Info>
+
+    **What happens:**
+
+    <Steps>
+      <Step title="Lead submits form">
+        Jane clicks Meta ad → fills demo form → `fbclid` stored in database
+      </Step>
+      
+      <Step title="Sales rep creates signup">
+        You create signup for `jane@acme.com` from your browser
+      </Step>
+      
+      <Step title="System fetches stored clicks">
+        System finds Jane's company group → retrieves original `fbclid`
+      </Step>
+      
+      <Step title="Attribution preserved">
+        Meta gets conversion credit for Jane's original ad ✅
+      </Step>
+    </Steps>
+    </Card>
+  </Tab>
+
+  <Tab title="Without prior lead">
+    <Card>
+    **Scenario:** You create a signup for someone who never submitted a lead form.
+
+    <Info>
+    **Why mark your browser?** Prevents your own click IDs from being attributed to this company if you recently clicked a Sleak ad.
+    </Info>
+
+    **What happens:**
+
+    <Steps>
+      <Step title="No prior lead exists">
+        Acme Corp has no lead events in the system
+      </Step>
+      
+      <Step title="Sales rep creates signup">
+        You create signup for `john@acme.com` from your browser
+      </Step>
+      
+      <Step title="System checks for stored clicks">
+        No prior click IDs found for Acme Corp
+      </Step>
+      
+      <Step title="No false attribution">
+        Stored in DB only, no ad platform reporting
+      </Step>
+    </Steps>
+    </Card>
+  </Tab>
+</Tabs>
+
+
+
+---
+
+## Ad platform reporting
+
+### Ad platforms
+
+<Tabs>
+  <Tab title="Google Ads">
+    <Card>
+    **Event mapping:**
+    
+    | Our Event | Google Event Name | Delivery Method | Purpose |
+    |-----------|------------------|-----------------|---------|
+    | <code style={{whiteSpace: 'nowrap'}}>lead</code><br/><code style={{whiteSpace: 'nowrap'}}>call_booked</code> | `Lead` | Enhanced Conversions for Leads API<br/>+ Google gtag | Campaign conversion goal |
+    | `trial_signup` | `Signup` | Enhanced Conversions for Web API<br/>+ Google gtag | Campaign conversion goal |
+    | <code style={{whiteSpace: 'nowrap'}}>agent_created</code><br/><code style={{whiteSpace: 'nowrap'}}>datasource_created</code><br/><code style={{whiteSpace: 'nowrap'}}>widget_installed</code> | Custom event | Google Ads API<br/>+ Google gtag | Enrichment (Smart Bidding signal) |
+    | <code style={{whiteSpace: 'nowrap'}}>checkout.session.completed</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.payment_succeeded</code><br/><code style={{whiteSpace: 'nowrap'}}>customer.subscription.*</code> | Custom event | Google Ads API<br/>+ Google gtag | Enrichment (Smart Bidding signal) |
+    
+    **Attribution matching:**
+    
+    | Method | Data Used | Use Case | Attribution Window |
+    |--------|-----------|----------|-------------------|
+    | **Click ID** (primary) | gclid, gbraid, wbraid → direct link to keyword/ad/campaign | User clicked Google ad, deterministic attribution | Search: 30d<br/>Display: 1d view, 30d click |
+    | **Enhanced conversions** (secondary) | Hashed email/phone + name/address. Works WITHOUT gclid. | Recovers lost gclid (cookie deletion, cross-device). Required for full coverage. | Same as above |
+    
+    **Impact:** Lead/Signup events = campaign goals. Activation/revenue events = Smart Bidding signals (not counted toward goals).
+    </Card>
+  </Tab>
+
+  <Tab title="Meta (Facebook/Instagram)">
+    <Card>
+    **Event mapping:**
+    
+    | Our Event | Meta Event Name | Delivery Method | Purpose |
+    |-----------|----------------|-----------------|---------|
+    | <code style={{whiteSpace: 'nowrap'}}>lead</code><br/><code style={{whiteSpace: 'nowrap'}}>call_booked</code> | `Lead` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Campaign conversion goal |
+    | `trial_signup` | `CompleteRegistration` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Campaign conversion goal |
+    | <code style={{whiteSpace: 'nowrap'}}>agent_created</code><br/><code style={{whiteSpace: 'nowrap'}}>datasource_created</code><br/><code style={{whiteSpace: 'nowrap'}}>widget_installed</code> | `ViewContent` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Enrichment (not conversion goal) |
+    | <code style={{whiteSpace: 'nowrap'}}>checkout.session.completed</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.payment_succeeded</code><br/><code style={{whiteSpace: 'nowrap'}}>customer.subscription.*</code> | `Purchase`<br/>`Subscribe` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Enrichment (not conversion goal) |
+    
+    **Attribution matching:**
+    
+    | Method | Data Used | Use Case |
+    |--------|-----------|----------|
+    | **Click ID** (primary) | fbclid, fbc cookie → direct link to ad/campaign/creative | User clicked Meta ad, deterministic attribution |
+    | **Identity match** (secondary) | fbp cookie + hashed email/phone/name + IP + user agent | User saw ad but didn't click, or cookies cleared. Still gets credit via identity. |
+    
+    **Match quality:** 8-9/10 (comprehensive identity + IP + cookies = better Lookalike Audiences)
+    </Card>
+  </Tab>
+</Tabs>
+
+---
+
+### Attribution model
+
+**Attribution windows:**
+- **Meta:** 7-day click window (industry standard)
+- **Google:** 30-day click window (industry standard)
+
+
+<Check>
+**Last-click attribution:** When multiple ad clicks exist for a company, we use the **most recent click per platform** within the attribution window.
+</Check>
+
+**Why last-click?**
+- Industry standard for paid ads
+- Platforms filter by these windows anyway
+- Most recent interaction is typically most relevant to conversion decision
+
+**Example scenario:**
+1. Week 1: User A clicks Meta ad → `fbclid` stored
+2. Week 2: User A clicks Google ad → `gclid` stored
+3. Week 3: User B clicks Meta ad (new) → `fbclid_new` stored
+4. Week 4: Signup happens
+
+**Result:** Reports using `fbclid_new` (most recent Meta click) + `gclid` (most recent Google click within 30d).
+
+---
+
+# Tracking
+
+### Hybrid tracking architecture
+
+We fire conversions from **both server and browser** with the same event ID - platforms automatically deduplicate and keep the richest data.
+
+| Method | What It Does | Key Data | When It Fires |
+|--------|--------------|----------|---------------|
+| **Server-side**<br/>(Meta CAPI, Google Enhanced Conversions) | Direct API calls to ad platforms | • Hashed email/phone/name<br/>• Click IDs (fbclid, gclid)<br/>• IP address, geo data<br/>• Event ID | Per the [reporting rules](#reporting-rules) |
+| **Client-side**<br/>(Facebook Pixel, Google gtag) | Browser JavaScript pixels | • Identity data (platforms hash)<br/>• Browser cookies (fbp, fbc)<br/>• Same event ID | Only when `reported: true` returned from server |
+
+**Why both?** Server-side is ad-blocker proof with reliable delivery (99.9% vs 70%), while client-side captures browser signals for better matching.
+
+**Platform-side deduplication** (Meta/Google merging our own server + browser sends of the *same* event - unrelated to the [reporting rules](#reporting-rules), which decide whether an event gets sent at all):
+- Meta: 48h window (keeps richest event)
+- Google: No time limit (merges on gclid + event ID)
+
+### Data enrichment
+
+Every event is automatically enriched with maximum data for optimal ad platform matching.
+
+| Source | Data Collected | Why It Matters |
+|--------|----------------|----------------|
+| **Browser**<br/>(`session.js`) | • Identity: email, phone, name<br/>• Click IDs: fbclid, gclid, fbp, fbc<br/>• UTMs: source, medium, campaign<br/>• Context: user agent, language, timezone | Required for Enhanced Conversions matching. Click IDs link to specific ads. |
+| **Server**<br/>(API routes) | • IP address (critical for Meta CAPI)<br/>• Geo: country, city, region<br/>• Server timestamp (accurate)<br/>• Company group ID | IP required for event quality score. Geo improves targeting. Prevents bot traffic. |
+
+**Result:** Match quality 8-9/10. Platforms can attribute conversions even when cookies are cleared or users switch devices.
+
+### Client-side tracking script
+
+All client-side tracking takes place through a modular tracking script served from https://data.sleak.chat/session.js
+
+The `session.js` script is deployed on:
+- **Marketing website** (sleak.chat) - all pages, loaded via Google Tag Manager
+- **App signup page** (dashboard.sleak.chat/signup) [ will be app.sleak.chat after UIV3 launch ]
+
+Cross-subdomain cookies enable seamless tracking across marketing site → app.
+
+<Steps>
+  <Step title="Page load">
+    Script loads → captures queryparams, click IDs from URL (fbclid, gclid, UTMs) if exists → stores in 365-day cookie
+    
+    Generates anonymous_id (browser fingerprint) if doesn't exist
+  </Step>
+
+  <Step title="User browses">
+    Click IDs persist in cookies across pages/sessions → no server calls yet
+  </Step>
+
+  <Step title="Conversion event">
+    User submits form (lead/signup) → `track()` function called
+    
+    Sends to server: event data + click_ids + anonymous_id + browser context
+    
+    Server responds → if `reported: true`, fires Facebook Pixel + Google gtag
+  </Step>
+
+  <Step title="Post-conversion">
+    Click IDs cleared from cookies (data now in database)
+    
+    Anonymous_id persists for future event linking
+  </Step>
+</Steps>
+
+
+### Cookies
+
+| Cookie | Purpose | Lifetime |
+|--------|---------|----------|
+| `slk_sid` | Visitor session ID | 365 days |
+| `slk_src` | Ad attribution data | 365 days |
+| `slk_ref` | Landing page reference | 365 days |
+
+### Usage
+
+#### Client-side events
+
+These events can be dispatched from any client where `session.js` is served:
+
+| Event | When to fire it |
+|-------|-----------------|
+| `lead` | Demo forms, contact forms, gated content |
+| `call_booked` | Calendly/call bookings |
+| `trial_signup` | Trial signups, account creation |
+
+<CodeGroup>
+
+```javascript Signup
+// Trial signups, account creation (requires user_id)
+window.sleakAttribution.track('trial_signup', {
+  email: 'john@acme.com',
+  first_name: 'John',
+  last_name: 'Doe',
+  phone: '+1234567890' // optional
+}, userId);
+```
+
+```javascript Lead
+// Demo forms, contact forms, gated content
+window.sleakAttribution.track('lead', {
+  email: 'john@acme.com',
+  first_name: 'John',
+  last_name: 'Doe',
+  phone: '+1234567890'
+});
+```
+
+```javascript Call Booked
+// Calendly/call bookings
+window.sleakAttribution.track('call_booked', {
+  email: 'john@acme.com',
+  first_name: 'John',
+  last_name: 'Doe',
+  phone: '+1234567890'
+});
+```
+
+</CodeGroup>
+
+<Info>
+**Signup events:** Pass `user_id` as the third parameter. Server looks up organization and member from user_id.
+
+**Lead events:** No third parameter needed - leads don't require authentication.
+
+Activation and revenue events are reported automatically on the backend and should never be sent through `track()`.
+</Info>
+
+#### Backend events (REST API)
+
+For server-side events (activation, revenue), call the API directly from your backend:
+
+<CodeGroup>
+
+```bash Activation
+# Agent created, datasource connected, widget installed
+curl -X POST https://data.sleak.chat/api/events/activation \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "event_name": "agent_created",
+    "idempotency_key": "evt_123abc",
+    "organization_id": "org_123",
+    "member_id": "usr_456",
+    "properties": {
+      "agent_name": "Sales Bot",
+      "agent_type": "conversational"
+    }
+  }'
+```
+
+```bash Revenue
+# Stripe webhooks - revenue, subscriptions (signature verified)
+curl -X POST https://data.sleak.chat/api/events/revenue \
+  -H "Content-Type: application/json" \
+  -H "Stripe-Signature: t=1234567890,v1=abc123..." \
+  -d @stripe_event.json
+```
+
+</CodeGroup>
+
+**Available endpoints:**
+
+| Endpoint | Purpose |
+|----------|---------|
+| `/api/events/leads` | Lead events (demo forms, Calendly) |
+| `/api/events/signup` | Trial signups, account creation |
+| `/api/events/activation` | Activation events (agent created, datasource connected) |
+| `/api/events/revenue` | Stripe revenue/subscriptions |
+
+---
+
+## FAQs
+
+<AccordionGroup>
+  <Accordion title="Why server-side and client-side tracking?">
+    **Redundancy & Enrichment:**
+    - Server-side = reliable delivery (no ad blockers)
+    - Client-side = browser cookies (fbp, fbc) for better matching
+    
+    Both send same event ID → platforms deduplicate → you get best of both
+  </Accordion>
+
+  <Accordion title="What if someone has no click ID?">
+    **We still track and report:**
+    - Server-side: Reports using email/phone matching only
+    - Client-side: Browser fires with fbp cookie (Meta) or device ID (Google)
+    
+    **Attribution:**
+    - No click ID = "organic" or "direct" in platform reporting
+    - Still useful for remarketing and Lookalike Audiences
+  </Accordion>
+
+  <Accordion title="What if someone clicks multiple ads?">
+    **Multi-platform:** Both platforms get credit (report once to each)
+    
+    **Same platform multiple times:** Last-click wins (most recent within attribution window)
+    
+    **Example 1: Different platforms**
+    1. Visitor clicks Meta ad → `fbclid` stored
+    2. Later clicks Google ad → `gclid` stored
+    3. Submits lead → Report to Meta **once** AND Google **once**
+    
+    **Example 2: Same platform multiple times**
+    1. Day 1: Visitor clicks Meta ad A → `fbclid_A` stored
+    2. Day 5: Visitor clicks Meta ad B → `fbclid_B` stored (newer)
+    3. Day 6: Submits lead → Report to Meta using `fbclid_B` (last-click)
+    
+    **Example 3: Signup with company history**
+    1. Week 1: User A clicks Meta ad → stored for `acme.com`
+    2. Week 2: User B clicks Google ad → stored for `acme.com`
+    3. Week 3: User C signs up as owner (first org) → Reports to **both** platforms using company's click history
+    4. Week 4: User D signs up → No reporting (company already reported)
+    
+    **Why this approach:**
+    - Last-click = industry standard for paid ads
+    - Multi-platform = each legitimately influenced the conversion
+    - Platforms apply their own attribution windows (7d Meta, 30d Google)
+    - Total conversions across platforms may exceed actual conversions (expected)
+  </Accordion>
+
+  <Accordion title="How long do click IDs persist?">
+    **Cookie lifetime:** 365 days
+    
+    **Cleared when:**
+    - Successful event sent to API
+    - User clears browser data
+    - 365 days expires
+    
+    **Recaptured when:**
+    - User clicks a new ad (overwrites old click ID)
+  </Accordion>
+
+  <Accordion title="What's the attribution window?">
+    **Our implementation:** Last-click attribution with platform-specific windows
+    - **Meta:** 7-day click window (most recent click wins)
+    - **Google:** 30-day click window (most recent click wins)
+    
+    **How it works:**
+    - We store all click IDs for 365 days in the database
+    - When reporting conversions, we filter to clicks within each platform's window
+    - If multiple clicks exist for a platform, the most recent one gets credit
+    
+    **Platform defaults:**
+    - Meta: 1-day view, 7-day click (configurable in campaign settings)
+    - Google: 30-day click (search), 1-day view (display/video)
+  </Accordion>
+
+  <Accordion title="Can we change the reporting rules?">
+    **Yes, but carefully:**
+    
+    Current rules are designed to prevent inflated metrics while capturing all real conversions. Changes need to balance:
+    - **Marketing metrics accuracy:** Preventing false inflation
+    - **Platform optimization quality:** Enough signal for Smart Bidding
+    - **Business reporting needs:** Accurate funnel metrics
+    
+    **Example scenarios to consider:**
+    - Looser filtering = more conversions reported, but risk of duplicates
+    - Stricter filtering = cleaner data, but may under-report real conversions
+    - Company-level vs individual-level tradeoffs for B2B vs B2C
+  </Accordion>
+</AccordionGroup>

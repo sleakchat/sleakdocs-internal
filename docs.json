@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "almond",
+  "theme": "luma",
   "name": "Sleak internal docs",
   "custom_css": [
     "/custom.css"
@@ -18,9 +18,7 @@
     "pages": [
       {
         "group": "Internal",
-        "pages": [
-          "index"
-        ]
+        "pages": ["index", "api-reference/attribution-engine"]
       },
       {
         "group": "API Reference",
