@@ -105,12 +105,24 @@ flowchart TD
 
 We track four conversion event types, each with specific business logic:
 
-| Event Type | Trigger | Reporting Rule |
-|------------|---------|---------------------|
-| **Lead** | Demo form, Calendly booking, contact form, gated content | Once per visitor (same browser). Different employees = separate leads. |
-| **Signup** | Trial signup, account creation | Once per company. Only when owner creates their first workspace. Team members not counted. |
-| **Activation** | First agent, datasource, widget install, qualified lead | Reported for enrichment only (not conversion goal). |
-| **Revenue** | Stripe payment, subscription created/renewed | Reported for enrichment only (not conversion goal). Includes revenue amount. |
+<style>
+{`
+table td:last-child code {
+  white-space: nowrap;
+}
+`}
+</style>
+
+| Event Type | Event |
+|------------|---------|
+| **Lead** | `lead` |
+| | `call_booked` |
+| **Signup** | `trial_signup` |
+| **Activation** | `agent_created` |
+| | `datasource_created` |
+| | `widget_installed` |
+| **Revenue** | `customer.created.complete` |
+| | `invoice.paid` |
 
 <Info>
 **Key Distinction:** Lead and Signup events are campaign conversion goals. Activation and Revenue events enrich pixel data for algorithmic learning but don't inflate metrics.
@@ -147,9 +159,9 @@ Not every event generates an ad platform conversion. Reporting rules restrict th
     1. Browser sends: name, email, phone, click IDs, anonymous ID
     2. Server extracts domain from email → resolves to company group
     3. Backfills: stamps company group onto earlier anonymous browsing
-    4. Checks: has this `anonymous_id` reported a lead before?
-    5. If no: reports to Meta/Google with enriched data
-    6. If yes: stores in DB only, no ad platform report
+    4. Checks: has this `anonymous_id` reported a lead before? Does company group already have an active subscription?
+    5. If first lead AND no subscription: reports to Meta/Google with enriched data  
+    6. If duplicate or existing customer: stores in DB only, no ad platform report
     7. Browser fires pixels (if reported)
     
     **Company group created:**
@@ -253,7 +265,7 @@ Two separate event deduplication layers exist, and they solve different problems
 
   | Event Type | Reporting Rule | Purpose |
   |------------|----------------|---------|
-  | **Lead** | Once per visitor | Prevents duplicate leads from same browser (form resubmits, typo corrections) |
+  | **Lead** | Once per visitor AND no active subscription | Prevents duplicates from same browser + blocks existing customers (no inflated acquisition metrics) |
   | **Signup** | Once per company (owner only, first org only) | Ensures 1 customer = 1 conversion (no inflation from team growth or multi-org users) |
   | **Activation events** | Always (when org has first-time owner) | Pixel enrichment/signals only (not campaign conversion goals) |
   | **Revenue events** | Always (when org has first-time owner) | Pixel enrichment/signals only (not campaign conversion goals) |
@@ -353,7 +365,7 @@ Your click IDs will be excluded from attribution. Re-visit if you clear browser 
     | <code style={{whiteSpace: 'nowrap'}}>lead</code><br/><code style={{whiteSpace: 'nowrap'}}>call_booked</code> | `Lead` | Enhanced Conversions for Leads API<br/>+ Google gtag | Campaign conversion goal |
     | `trial_signup` | `Signup` | Enhanced Conversions for Web API<br/>+ Google gtag | Campaign conversion goal |
     | <code style={{whiteSpace: 'nowrap'}}>agent_created</code><br/><code style={{whiteSpace: 'nowrap'}}>datasource_created</code><br/><code style={{whiteSpace: 'nowrap'}}>widget_installed</code> | Custom event | Google Ads API<br/>+ Google gtag | Enrichment (Smart Bidding signal) |
-    | <code style={{whiteSpace: 'nowrap'}}>checkout.session.completed</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.payment_succeeded</code><br/><code style={{whiteSpace: 'nowrap'}}>customer.subscription.*</code> | Custom event | Google Ads API<br/>+ Google gtag | Enrichment (Smart Bidding signal) |
+    | <code style={{whiteSpace: 'nowrap'}}>customer.created.complete</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.paid</code> | Custom event | Google Ads API<br/>+ Google gtag | Enrichment (Smart Bidding signal) |
     
     **Attribution matching:**
     
@@ -375,7 +387,7 @@ Your click IDs will be excluded from attribution. Re-visit if you clear browser 
     | <code style={{whiteSpace: 'nowrap'}}>lead</code><br/><code style={{whiteSpace: 'nowrap'}}>call_booked</code> | `Lead` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Campaign conversion goal |
     | `trial_signup` | `CompleteRegistration` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Campaign conversion goal |
     | <code style={{whiteSpace: 'nowrap'}}>agent_created</code><br/><code style={{whiteSpace: 'nowrap'}}>datasource_created</code><br/><code style={{whiteSpace: 'nowrap'}}>widget_installed</code> | `ViewContent` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Enrichment (not conversion goal) |
-    | <code style={{whiteSpace: 'nowrap'}}>checkout.session.completed</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.payment_succeeded</code><br/><code style={{whiteSpace: 'nowrap'}}>customer.subscription.*</code> | `Purchase`<br/>`Subscribe` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Enrichment (not conversion goal) |
+    | <code style={{whiteSpace: 'nowrap'}}>customer.created.complete</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.paid</code> | `Purchase`<br/>`Subscribe` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Enrichment (not conversion goal) |
     
     **Attribution matching:**
     
@@ -635,8 +647,9 @@ The attribution system uses a dedicated **`attribution` schema** in your Supabas
 2. **Company-centric attribution**: Events roll up to `company_groups` rather than individual users
 3. **Audit trail**: All ad platform sends logged in `conversion_exports` for debugging
 4. **Backfill support**: Anonymous events can be retroactively linked to identified users
-5. **Internal team exclusion**: `internal` flag prevents attribution pollution from sales/admin browsers
-6. **Payload storage**: Both request payloads and API responses stored for complete audit trail
+5. **Internal team exclusion**: `internal` flag prevents attribution pollution from sales/admin browsers  
+6. **Existing customer filtering**: Lead reporting blocked for companies with active Stripe subscriptions
+7. **Payload storage**: Both request payloads and API responses stored for complete audit trail
 
 ---
 
