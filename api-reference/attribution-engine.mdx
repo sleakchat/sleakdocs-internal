@@ -606,6 +606,40 @@ curl -X POST https://data.sleak.chat/api/events/revenue \
 
 ---
 
+## Infrastructure Specifications
+
+### Database Schema
+
+The attribution system uses a dedicated **`attribution` schema** in your Supabase database, separate from your main application tables. This provides clean isolation and security for attribution data.
+
+#### Attribution Tables
+
+| Table | Purpose | Key Columns |
+|-------|---------|-------------|
+| `company_groups` | Core attribution entity grouping multiple organizations/users | `id`, `domain`, `attio_company_id`, `is_provisioned` |
+| `organization_company_groups` | Maps organizations to company groups | `organization_id`, `company_group_id`, `source` |
+| `click_ids` | Stores ad platform click IDs and UTM data | `type`, `value`, `attribution`, `anonymous_id`, `internal` |
+| `tracking_events` | All conversion events (leads, signups, activation, revenue) | `event_name`, `properties`, `idempotency_key`, `occurred_at` |
+| `conversion_exports` | Audit log of all ad platform reporting attempts | `platform`, `tracking_event_id`, `payload`, `response`, `success`, `simulated` |
+
+#### Schema Access
+
+- **Row Level Security (RLS)**: Enabled on all tables
+- **Service role access**: Full CRUD permissions for API routes  
+- **Authenticated users**: Blocked from direct access (API-only architecture)
+- **Public access**: No direct database access allowed
+
+#### Key Design Decisions
+
+1. **Separate schema**: `attribution.*` tables isolated from main `public.*` application tables
+2. **Company-centric attribution**: Events roll up to `company_groups` rather than individual users
+3. **Audit trail**: All ad platform sends logged in `conversion_exports` for debugging
+4. **Backfill support**: Anonymous events can be retroactively linked to identified users
+5. **Internal team exclusion**: `internal` flag prevents attribution pollution from sales/admin browsers
+6. **Payload storage**: Both request payloads and API responses stored for complete audit trail
+
+---
+
 ## FAQs
 
 <AccordionGroup>
@@ -696,3 +730,12 @@ curl -X POST https://data.sleak.chat/api/events/revenue \
     - Company-level vs individual-level tradeoffs for B2B vs B2C
   </Accordion>
 </AccordionGroup>
+
+---
+
+## Future Roadmap
+
+- **Attribution dashboard** - Company timelines, charts, ROAS reporting
+- **Attio CRM integration** - Company lookup, merge webhooks  
+- **Additional ad platforms** - LinkedIn, Microsoft, TikTok APIs
+- **Multi-touch attribution** - First-click, last-click models
