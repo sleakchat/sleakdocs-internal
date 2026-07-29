@@ -93,6 +93,25 @@
         "pages": [
           "POST /queueing_tags/queueing/tags"
         ]
+      },
+      {
+        "group": "Clustering",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": [
+          "POST /clustering/process",
+          "POST /clustering/initialise",
+          "POST /clustering/discover",
+          "GET /clustering/healthz"
+        ]
+      },
+      {
+        "group": "Clustering Queue",
+        "expanded": true,
+        "openapi": "openapi.json",
+        "pages": [
+          "POST /queueing-clustering/queueing/clustering"
+        ]
       }
     ]
   },
