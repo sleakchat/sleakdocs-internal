@@ -1,0 +1,112 @@
+---
+title: "Raycast Extension"
+description: "Impersonate any user in Sleak or Untyped supafast... w/ Sleak admin tools Raycast extension"
+---
+
+This handy extension lets you impersonate (sign in as) any user in Sleak or Untyped directly from Raycast. From now on, the sleak admin tools extensions is managed via the raycast extension managed from the new Sleak Raycast workspace/team.
+
+<Frame>
+  <img src="/media/raycast-extension/raycast-appstore-preview.png" alt="Raycast extension app store preview" />
+</Frame>
+
+## Setup
+
+<Steps>
+  <Step title="Remove old extension (if installed)">
+    If you have the old raycast extension for sleak admin tools already installed - first remove it by hitting `cmd + k` in the extension settings and removing it
+  </Step>
+
+  <Step title="Join the Sleak organization">
+    Join the Sleak organization via invite URL. Ask @Bas to generate a new invite URL.
+  </Step>
+
+  <Step title="Configure credentials">
+    Open Raycast and search for "Impersonate Sleak.chat" or "Impersonate Untyped"
+
+    <Tabs>
+      <Tab title="Impersonate Sleak.chat">
+        Fill in your Sleak credentials. Your own dashboard.sleak.chat auth credentials have the right permissions out of the box - as long as the email is a member with at least role 'admin' in the 'Sleak' organization/workspace + your email ends with `*@sleak.chat`
+
+        Let op - zorg dat je een veilig wachtwoord hebt op Sleak [ random string characters ]
+      </Tab>
+
+      <Tab title="Impersonate Untyped">
+        Works with service account like before
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="You should be all set up now 🕺">
+    The extension is ready to use. Let's get sleaky!
+  </Step>
+</Steps>
+
+## Usage
+
+### Impersonate Sleak.chat
+
+<sub>version 2.1</sub>
+
+<Steps>
+  <Step title="Open the command and search">
+    Open the command and type a search query. You can search for:
+    - `auth.users.email`
+    - `organizations.company_name`
+    - `Chatbots.website_url`
+
+    <Frame>
+      <img src="/media/raycast-extension/raycast-search.png" alt="Search for organizations" />
+    </Frame>
+  </Step>
+
+  <Step title="Select an organization">
+    All matching organizations will be returned in list view. Drill down into an organization to view its users.
+
+    <Frame>
+      <img src="/media/raycast-extension/raycast-organization-view.png" alt="View organization details" />
+    </Frame>
+  </Step>
+
+  <Step title="Impersonate a user">
+    Press Enter to open an impersonation link in your browser - you're now signed in as that user.
+
+    <Frame>
+      <img src="/media/raycast-extension/raycast-user-select.png" alt="Select user to impersonate" />
+    </Frame>
+  </Step>
+
+  <Step title="View agents (optional)">
+    **New action**: `cmd+k` into an organization to show all its agents. Hit enter to view the chatbots preview page in browser.
+  </Step>
+</Steps>
+
+### Impersonate Untyped
+
+*<sub>version 1.1</sub>*
+
+Untyped still needs a service account to auth:
+
+| Field    | Value                                  |
+| -------- | -------------------------------------- |
+| Email    | `impersonization_dont_delete@sleak.nl` |
+| Password | `ask @bas`                             |
+
+## Updates
+
+Updates are pushed to the Raycast organization and installed automatically. No action needed on your end.
+
+## Access
+
+You need an admin account. Contact Bas or Tom if you don't have one.
+
+<Info>
+To be continued - new commands will follow later
+</Info>
+
+## Future improvements/features
+
+- [ ] Member roles renderen in members list
+- [ ] Zoeken op organization id
+- [ ] Organization plan renderen
+- [ ] `cmd+k` action in organization voor organization id quick copy 
+- [ ] `cmd+k` action in chatbot voor chatbot id quick copy 

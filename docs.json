@@ -17,8 +17,12 @@
   "navigation": {
     "pages": [
       {
-        "group": "Internal",
-        "pages": ["index", "api-reference/attribution-engine"]
+        "group": "Internal docs",
+        "pages": ["index"]
+      },
+      {
+        "group": "Miscellaneous",
+        "pages": ["api-reference/attribution-engine", "miscellaneous/raycast-extension"]
       },
       {
         "group": "API Reference",

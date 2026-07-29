@@ -7,6 +7,8 @@ description: 'Complete guide to Sleak.chat marketing attribution & conversion tr
 
 Sleak's attribution engine tracks the complete customer journey from first ad click through signup, product usage (activation), and revenue. We use **company-level attribution** for B2B accuracy and **hybrid tracking** (server + browser) for maximum coverage & accuracy.
 
+<br/>
+
 ```mermaid
 flowchart TD
     subgraph browserGroup["Browser (client-side)"]
@@ -79,6 +81,8 @@ flowchart TD
     style platformsGroup fill:#ECFDF5,stroke:#6EE7B7
     style dbGroup fill:#F3F4F6,stroke:#6B7280
 ```
+
+<br/>
 
 ### Key principles
 
@@ -520,25 +524,43 @@ window.sleakAttribution.track('lead', {
 });
 ```
 
-```javascript Call Booked
-// Calendly/call bookings
-window.sleakAttribution.track('call_booked', {
-  email: 'john@acme.com',
-  first_name: 'John',
-  last_name: 'Doe',
-  phone: '+1234567890'
-});
+```javascript Call Booked [Calendly]
+// Calendly bookings are tracked automatically by session.js.
+// Just embed the Calendly widget - no custom code needed:
+
+<!-- Calendly inline widget -->
+<div class="calendly-inline-widget" 
+     data-url="https://calendly.com/your-link" 
+     style="min-width:320px;height:100%"></div>
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+// session.js listens for calendly.event_scheduled and tracks call_booked
+// automatically. Identity is enriched server-side via the Calendly API.
 ```
 
 </CodeGroup>
 
+
 <Info>
-**Signup events:** Pass `user_id` as the third parameter. Server looks up organization and member from user_id.
-
-**Lead events:** No third parameter needed - leads don't require authentication.
-
-Activation and revenue events are reported automatically on the backend and should never be sent through `track()`.
+Activation and revenue events are reported automatically on the backend and should (or can) never be sent through `track()`.
 </Info>
+
+<Accordion title="Calendly enrichment flow">
+Calendly bookings are tracked automatically by `session.js` - just embed the widget, no custom event listener needed.
+
+`session.js` listens for Calendly's `event_scheduled` message. The browser event only exposes opaque URIs (no email, name or phone), so identity is resolved server-side:
+
+1. Client sends URIs to `/api/events/leads` (with attribution context: click_ids, anonymous_id)
+2. Server calls Calendly API (`GET {invitee_uri}`) to fetch email, name, phone
+3. Server stores tracking event with enriched data
+4. Server reports to Meta/Google CAPI with full identity
+5. Server returns `enriched_properties` to client
+6. Client fires Meta Pixel/gtag with enriched data for browser-side matching
+
+This ensures attribution accuracy (client-side context preserved) while keeping the Calendly API token secure (server-side only).
+
+If the Calendly lookup fails or times out (3s), the event is still stored and reported with whatever attribution context it has - only the identity fields are missing.
+</Accordion>
 
 #### Backend events (REST API)
 
@@ -577,7 +599,7 @@ curl -X POST https://data.sleak.chat/api/events/revenue \
 
 | Endpoint | Purpose |
 |----------|---------|
-| `/api/events/leads` | Lead events (demo forms, Calendly) |
+| `/api/events/leads` | Lead events (demo forms, Calendly). Automatically enriches from Calendly API when `calendly_invitee_uri` is present. |
 | `/api/events/signup` | Trial signups, account creation |
 | `/api/events/activation` | Activation events (agent created, datasource connected) |
 | `/api/events/revenue` | Stripe revenue/subscriptions |

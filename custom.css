@@ -30,3 +30,37 @@ h5,
 h6 {
   font-weight: 600 !important;
 }
+
+[data-component-part='step-title'] {
+  font-weight: 600 !important;
+}
+
+sub {
+  color: #6b7280;
+  font-size: 0.875rem;
+  display: block;
+}
+
+input[type='checkbox'] {
+  margin-right: 0.5em;
+}
+
+ul.contains-task-list {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+li.task-list-item {
+  list-style: none !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+li.task-list-item::marker {
+  content: none !important;
+}
+
+li.task-list-item::before {
+  content: none !important;
+}
