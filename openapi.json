@@ -918,6 +918,96 @@
         }
       ]
     },
+    "/clustering/gaps/initialise": {
+      "post": {
+        "summary": "Backfill Knowledge Gaps",
+        "description": "Dispatches a Cloud Run Job that analyses historical problem chats for an organization and builds its knowledge gaps.\n\nActual path on the Clustering service: `/gaps/initialise`.",
+        "operationId": "clustering_gaps_initialise_gaps_initialise_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clustering_GapsInitialiseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
+    "/clustering/gaps/surface": {
+      "post": {
+        "summary": "Surface Knowledge Gaps",
+        "description": "Makes pending knowledge gaps whose score crosses the threshold visible in the admin UI. Scheduled weekly by pg_cron.\n\nActual path on the Clustering service: `/gaps/surface`.",
+        "operationId": "clustering_surface_gaps_gaps_surface_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clustering_SurfaceGapsRequest",
+                "default": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
     "/clustering/healthz": {
       "get": {
         "summary": "Health Check",
@@ -2347,6 +2437,38 @@
         "type": "object",
         "title": "DiscoverRequest"
       },
+      "clustering_GapsInitialiseRequest": {
+        "properties": {
+          "organization_id": {
+            "type": "string",
+            "title": "Organization Id",
+            "description": "Organization whose historical problem chats should be analysed."
+          },
+          "chatbot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chatbot Id",
+            "description": "Optional chatbot scope; null means org-wide."
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maximum problem chats to analyse.",
+            "default": 500
+          }
+        },
+        "type": "object",
+        "required": [
+          "organization_id"
+        ],
+        "title": "GapsInitialiseRequest"
+      },
       "clustering_HTTPValidationError": {
         "properties": {
           "detail": {
@@ -2411,6 +2533,36 @@
           "organization_id"
         ],
         "title": "InitialiseRequest"
+      },
+      "clustering_SurfaceGapsRequest": {
+        "properties": {
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold",
+            "description": "Score threshold; defaults to CLUSTER_GAP_SCORE_THRESHOLD."
+          },
+          "min_chats": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Chats",
+            "description": "Minimum linked chats; defaults to CLUSTER_GAP_MIN_CHATS."
+          }
+        },
+        "type": "object",
+        "title": "SurfaceGapsRequest"
       },
       "clustering_ValidationError": {
         "properties": {

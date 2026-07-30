@@ -18,11 +18,16 @@
     "pages": [
       {
         "group": "Internal docs",
-        "pages": ["index"]
+        "pages": [
+          "index"
+        ]
       },
       {
         "group": "Miscellaneous",
-        "pages": ["api-reference/attribution-engine", "miscellaneous/raycast-extension"]
+        "pages": [
+          "api-reference/attribution-engine",
+          "miscellaneous/raycast-extension"
+        ]
       },
       {
         "group": "API Reference",
@@ -102,6 +107,8 @@
           "POST /clustering/process",
           "POST /clustering/initialise",
           "POST /clustering/discover",
+          "POST /clustering/gaps/initialise",
+          "POST /clustering/gaps/surface",
           "GET /clustering/healthz"
         ]
       },
