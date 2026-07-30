@@ -121,7 +121,7 @@ table td:last-child code {
 | **Activation** | `agent_created` |
 | | `datasource_created` |
 | | `widget_installed` |
-| **Revenue** | `customer.created.complete` |
+| **Revenue** | `customer.created` |
 | | `invoice.paid` |
 
 <Info>
@@ -365,7 +365,7 @@ Your click IDs will be excluded from attribution. Re-visit if you clear browser 
     | <code style={{whiteSpace: 'nowrap'}}>lead</code><br/><code style={{whiteSpace: 'nowrap'}}>call_booked</code> | `Lead` | Enhanced Conversions for Leads API<br/>+ Google gtag | Campaign conversion goal |
     | `trial_signup` | `Signup` | Enhanced Conversions for Web API<br/>+ Google gtag | Campaign conversion goal |
     | <code style={{whiteSpace: 'nowrap'}}>agent_created</code><br/><code style={{whiteSpace: 'nowrap'}}>datasource_created</code><br/><code style={{whiteSpace: 'nowrap'}}>widget_installed</code> | Custom event | Google Ads API<br/>+ Google gtag | Enrichment (Smart Bidding signal) |
-    | <code style={{whiteSpace: 'nowrap'}}>customer.created.complete</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.paid</code> | Custom event | Google Ads API<br/>+ Google gtag | Enrichment (Smart Bidding signal) |
+    | <code style={{whiteSpace: 'nowrap'}}>customer.created</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.paid</code> | Custom event | Google Ads API<br/>+ Google gtag | Enrichment (Smart Bidding signal) |
     
     **Attribution matching:**
     
@@ -387,7 +387,7 @@ Your click IDs will be excluded from attribution. Re-visit if you clear browser 
     | <code style={{whiteSpace: 'nowrap'}}>lead</code><br/><code style={{whiteSpace: 'nowrap'}}>call_booked</code> | `Lead` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Campaign conversion goal |
     | `trial_signup` | `CompleteRegistration` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Campaign conversion goal |
     | <code style={{whiteSpace: 'nowrap'}}>agent_created</code><br/><code style={{whiteSpace: 'nowrap'}}>datasource_created</code><br/><code style={{whiteSpace: 'nowrap'}}>widget_installed</code> | `ViewContent` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Enrichment (not conversion goal) |
-    | <code style={{whiteSpace: 'nowrap'}}>customer.created.complete</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.paid</code> | `Purchase`<br/>`Subscribe` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Enrichment (not conversion goal) |
+    | <code style={{whiteSpace: 'nowrap'}}>customer.created</code><br/><code style={{whiteSpace: 'nowrap'}}>invoice.paid</code> | `Purchase`<br/>`Subscribe` | Meta Conversions API (CAPI)<br/>+ Facebook Pixel | Enrichment (not conversion goal) |
     
     **Attribution matching:**
     
