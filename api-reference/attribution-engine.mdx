@@ -101,6 +101,28 @@ flowchart TD
   </Card>
 </CardGroup>
 
+### Attribution analytics admin dashboard
+
+The production results of the attribution engine are exposed as a queryable UI on [attribution.sleak.chat/dashboard](https://attribution.sleak.chat/dashboard). Company timelines, conversion funnels, and ad platform reporting status are all aggregated into charts and tables.
+
+<Info>
+Google Workspace OAuth via Supabase, restricted to `@sleak.chat` accounts with a membership row in the internal Sleak org. Any other host (e.g. `data.sleak.chat`) gets a bare 404 for HTML routes.
+</Info>
+
+Analyze key numbers at a glance - total leads, signups, activations, revenue, and conversion rates. Charts show daily activity trends, which ad platforms are driving results, and revenue over time.
+
+Use the **company list** to browse all companies that have interacted with your ads. Each row shows their activity, ad platform attribution, etc.. Companies that haven't signed up yet show an "unconfirmed" badge.
+
+Click any row in the **Company group timeline** to see their full journey - every ad they clicked, every page they visited, and every conversion event. You'll see which events were successfully reported to ad platforms, which failed, and why some weren't reported. Click any event to see the full details of what was sent to Meta or Google.
+
+When viewing a company's timeline, filters apply to show only that company's data in the top charts.
+
+<Frame>
+  <img src="/media/attribution-engine/attribution-engine.png" alt="Attribution admin dashboard" />
+</Frame>
+
+---
+
 ### Event types
 
 We track four conversion event types, each with specific business logic:
@@ -748,7 +770,7 @@ The attribution system uses a dedicated **`attribution` schema** in your Supabas
 
 ## Future Roadmap
 
-- **Attribution dashboard** - Company timelines, charts, ROAS reporting
+- **ROAS reporting** - Cost data integration into the [admin dashboard](#admin-dashboard) for return-on-ad-spend, not just conversion counts
 - **Attio CRM integration** - Company lookup, merge webhooks  
 - **Additional ad platforms** - LinkedIn, Microsoft, TikTok APIs
 - **Multi-touch attribution** - First-click, last-click models
