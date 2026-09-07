@@ -1223,6 +1223,18 @@
             "title": "External Id",
             "description": "External system identifier for the message or visitor."
           },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message Id",
+            "description": "Id of the inbound messages row this turn answers; email drafts are stored on it."
+          },
           "current_page": {
             "anyOf": [
               {
