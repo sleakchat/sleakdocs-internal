@@ -72,7 +72,8 @@
         "openapi": "openapi.json",
         "pages": [
           "POST /evaluations_processor/process",
-          "POST /evaluations_processor/process_qa"
+          "POST /evaluations_processor/process_qa",
+          "POST /evaluations_processor/settle_resolution"
         ]
       },
       {

@@ -613,6 +613,44 @@
         }
       ]
     },
+    "/evaluations_processor/settle_resolution": {
+      "post": {
+        "summary": "Settle Chat Resolution State",
+        "description": "Settles a chat's Fin-equivalent resolution state once the conversation has been quiet for the configured window. When the chat has moved on since the task was scheduled, the settle is re-enqueued for the new deadline instead of writing a state. Accepts the request and runs the work in the background.\n\nActual path on the Evaluations Processor service: `/settle_resolution`.",
+        "operationId": "evaluations_processor_settle_chat_resolution_settle_resolution_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/evaluations_processor_ResolutionSettleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Payload is missing chat_id"
+          }
+        },
+        "tags": [
+          "Evaluations Processor"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://evaluations-processor-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
     "/queueing_evaluations/queueing/evaluations": {
       "post": {
         "summary": "Queue Chat Evaluation",
@@ -1907,6 +1945,26 @@
         "additionalProperties": true,
         "type": "object",
         "title": "QARecord"
+      },
+      "evaluations_processor_ResolutionSettleRequest": {
+        "properties": {
+          "chat_id": {
+            "type": "string",
+            "title": "Chat Id",
+            "description": "Identifier of the chat whose resolution state should be settled."
+          },
+          "hop": {
+            "type": "integer",
+            "title": "Hop",
+            "description": "Re-enqueue depth of this settle attempt, used as a runaway guard.",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "chat_id"
+        ],
+        "title": "ResolutionSettleRequest"
       },
       "evaluations_processor_ValidationError": {
         "properties": {
