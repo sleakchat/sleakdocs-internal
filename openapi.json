@@ -818,6 +818,202 @@
         }
       ]
     },
+    "/clustering/queue": {
+      "post": {
+        "summary": "Queue Chat Clustering Task (Alias)",
+        "description": "Alias for /queueing/clustering.\n\nActual path on the Clustering service: `/queue`.",
+        "operationId": "clustering_queue_chat_clustering_queue_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clustering_ClusterProcessRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_QueueChatResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
+    "/clustering/queueing/clustering": {
+      "post": {
+        "summary": "Queue Chat Clustering Task",
+        "description": "Schedules a delayed, deduped Cloud Task that calls /process after a debounce delay.\n\nActual path on the Clustering service: `/queueing/clustering`.",
+        "operationId": "clustering_queue_chat_clustering_queueing_clustering_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clustering_ClusterProcessRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_QueueChatResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error while queueing the clustering task"
+          },
+          "503": {
+            "description": "Task queue is not available"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
+    "/clustering/queueing/clustering/delete": {
+      "post": {
+        "summary": "Dequeue Chat Clustering Task (POST)",
+        "description": "Dequeues and cancels any pending Cloud Tasks for this chat ID.\n\nActual path on the Clustering service: `/queueing/clustering/delete`.",
+        "operationId": "clustering_dequeue_chat_clustering_queueing_clustering_delete_post",
+        "parameters": [
+          {
+            "name": "chat_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Chat Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_DequeueChatResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
+    "/clustering/queue/{chat_id}": {
+      "delete": {
+        "summary": "Dequeue Chat Clustering Task",
+        "description": "Dequeues and cancels any pending Cloud Tasks for this chat ID.\n\nActual path on the Clustering service: `/queue/{chat_id}`.",
+        "operationId": "clustering_dequeue_chat_clustering_queue__chat_id__delete",
+        "parameters": [
+          {
+            "name": "chat_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Chat Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_DequeueChatResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clustering_HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clustering"
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://clustering-dev-849186242728.europe-west4.run.app"
+        }
+      ]
+    },
     "/clustering/process": {
       "post": {
         "summary": "Cluster One Closed Chat",
@@ -2477,6 +2673,32 @@
         ],
         "title": "ClusterProcessRequest"
       },
+      "clustering_DequeueChatResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Outcome of the dequeueing operation."
+          },
+          "chat_id": {
+            "type": "string",
+            "title": "Chat Id",
+            "description": "Identifier of the chat."
+          },
+          "deleted_count": {
+            "type": "integer",
+            "title": "Deleted Count",
+            "description": "Number of tasks dequeued for the chat.",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "chat_id"
+        ],
+        "title": "DequeueChatResponse"
+      },
       "clustering_DiscoverRequest": {
         "properties": {
           "organization_id": {
@@ -2603,6 +2825,38 @@
           "organization_id"
         ],
         "title": "InitialiseRequest"
+      },
+      "clustering_QueueChatResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Outcome of the queueing operation."
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Id",
+            "description": "Cloud Tasks resource name of the created task."
+          },
+          "chat_id": {
+            "type": "string",
+            "title": "Chat Id",
+            "description": "Identifier of the chat the queued task belongs to."
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "chat_id"
+        ],
+        "title": "QueueChatResponse"
       },
       "clustering_SurfaceGapsRequest": {
         "properties": {

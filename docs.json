@@ -105,6 +105,10 @@
         "expanded": true,
         "openapi": "openapi.json",
         "pages": [
+          "POST /clustering/queue",
+          "POST /clustering/queueing/clustering",
+          "POST /clustering/queueing/clustering/delete",
+          "DELETE /clustering/queue/{chat_id}",
           "POST /clustering/process",
           "POST /clustering/initialise",
           "POST /clustering/discover",
