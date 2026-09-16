@@ -2818,6 +2818,18 @@
             "title": "Reset",
             "description": "Clear the org's existing topic model before seeding (default true).",
             "default": true
+          },
+          "subtopic_consolidation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtopic Consolidation",
+            "description": "Subtopic consolidation mode: 'llm', 'vector', or 'none'. Defaults to CLUSTER_SUBTOPIC_CONSOLIDATION_MODE."
           }
         },
         "type": "object",
