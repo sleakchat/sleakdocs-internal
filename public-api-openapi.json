@@ -2,20 +2,16 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Sleak Chat API",
-    "description": "API voor het beheren van chatbot conversaties. Deze API maakt het mogelijk om veilig gesprekken te starten\nen berichten uit te wisselen met AI-chatbots, inclusief het meesturen van afbeeldingen.\n\n## Authenticatie\nGebruik je API sleutel als Bearer token in de Authorization header:\n```\nAuthorization: Bearer <jouw-api-sleutel>\n```\nEen API sleutel hoort bij één organisatie en geeft toegang tot alle chatbots en conversaties van die organisatie.\n\n## Werkwijze\n1. Start een conversatie met `POST /api/conversation` en bewaar de `conversation_id` en `contact_id`.\n2. Verstuur berichten met `POST /api/message`. Het antwoord van de chatbot zit direct in de response.\n3. Gebruik dezelfde `contact_id` bij een volgende conversatie om deze aan hetzelfde contact te koppelen.\n\n## Rate Limiting\nRequests zijn beperkt tot 100 per minuut per API sleutel. Bij overschrijding volgt een `429` met de headers\n`Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining` en `X-RateLimit-Reset`.\n\n## Foutafhandeling\nDe API gebruikt standaard HTTP statuscodes:\n- `200`: Succesvol verwerkt\n- `400`: Ongeldige aanvraag\n- `401`: Ontbrekende of ongeldige API sleutel\n- `403`: Abonnement van de organisatie is niet actief\n- `404`: Niet gevonden\n- `422`: Request body voldoet niet aan het schema\n- `429`: Te veel aanvragen (rate limit overschreden)\n- `500`: Server fout\n",
+    "description": "API voor het beheren van chatbot conversaties. Deze API maakt het mogelijk om veilig gesprekken te starten\nen berichten uit te wisselen met AI-chatbots, inclusief het meesturen van afbeeldingen.\n\n## Authenticatie\nGebruik je API sleutel als Bearer token in de Authorization header:\n```\nAuthorization: Bearer <jouw-api-sleutel>\n```\nEen API sleutel hoort bij één organisatie en geeft toegang tot alle chatbots en conversaties van die organisatie.\n\n## Werkwijze\n1. Start een conversatie met `POST /api/conversation` en bewaar de `conversation_id` en `contact_id`.\n2. Verstuur berichten met `POST /api/message`. Het antwoord van de chatbot zit direct in de response.\n3. Gebruik dezelfde `contact_id` bij een volgende conversatie om deze aan hetzelfde contact te koppelen.\n\n## Rate Limiting\nRequests zijn beperkt tot 100 per minuut per API sleutel. Bij overschrijding volgt een `429` met de headers\n`Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining` en `X-RateLimit-Reset`.\n",
     "version": "1.1.0",
     "contact": {
       "name": "Sleak Support",
       "email": "support@sleak.chat"
-    },
-    "license": {
-      "name": "Proprietary"
     }
   },
   "servers": [
     {
-      "url": "https://api.v1.sleak.chat",
-      "description": "Api server"
+      "url": "https://api.v1.sleak.chat"
     }
   ],
   "security": [
@@ -50,11 +46,6 @@
                 "schema": {
                   "$ref": "#/components/schemas/ConversationResponse"
                 }
-              }
-            },
-            "headers": {
-              "X-Process-Time": {
-                "$ref": "#/components/headers/X-Process-Time"
               }
             }
           },
@@ -145,11 +136,6 @@
                   "$ref": "#/components/schemas/MessageResponse"
                 }
               }
-            },
-            "headers": {
-              "X-Process-Time": {
-                "$ref": "#/components/headers/X-Process-Time"
-              }
             }
           },
           "400": {
@@ -200,15 +186,6 @@
         "type": "http",
         "scheme": "bearer",
         "description": "Gebruik je API sleutel als Bearer token.\nVoorbeeld: `Authorization: Bearer <jouw-api-sleutel>`\n"
-      }
-    },
-    "headers": {
-      "X-Process-Time": {
-        "description": "Verwerkingstijd van de request in seconden",
-        "schema": {
-          "type": "string",
-          "example": "5.17"
-        }
       }
     },
     "responses": {
@@ -296,24 +273,6 @@
       }
     },
     "schemas": {
-      "HealthResponse": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "example": "healthy"
-          },
-          "version": {
-            "type": "string",
-            "example": "1.0.0"
-          },
-          "instance": {
-            "type": "string",
-            "description": "Naam van de actieve deployment",
-            "example": "sleak-api-00037-hjk"
-          }
-        }
-      },
       "ConversationRequest": {
         "type": "object",
         "required": [
@@ -331,11 +290,6 @@
             "format": "uuid",
             "description": "Optionele UUID voor het contact. Als deze niet wordt opgegeven, wordt automatisch een nieuwe ID\ngegenereerd. Een bestaand contact moet tot dezelfde organisatie als de chatbot behoren.\n",
             "example": "c428c263-a1d3-4072-bf64-525cefbfb0b1"
-          },
-          "channel": {
-            "type": "string",
-            "description": "Optioneel label voor het kanaal waarlangs de conversatie binnenkomt",
-            "example": "public-api"
           },
           "external_id": {
             "type": "string",
@@ -398,11 +352,6 @@
             "description": "Het bericht dat naar de chatbot wordt gestuurd",
             "example": "Hallo, ik heb een vraag over jullie producten",
             "minLength": 1
-          },
-          "channel": {
-            "type": "string",
-            "description": "Optioneel label voor het kanaal van dit bericht",
-            "example": "public-api"
           },
           "attachments": {
             "type": "array",
@@ -579,10 +528,6 @@
     }
   },
   "tags": [
-    {
-      "name": "Monitoring",
-      "description": "Endpoints voor het monitoren van de API status"
-    },
     {
       "name": "Conversaties",
       "description": "Beheer van chatbot conversaties"
