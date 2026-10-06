@@ -37,15 +37,6 @@
         ]
       },
       {
-        "group": "Public API",
-        "expanded": true,
-        "openapi": "public-api-openapi.json",
-        "pages": [
-          "POST /api/conversation",
-          "POST /api/message"
-        ]
-      },
-      {
         "group": "Agent",
         "expanded": true,
         "openapi": "openapi.json",
