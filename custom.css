@@ -41,8 +41,21 @@ figure img {
   margin-top: 0 !important;
 }
 
+.is-center ~ #sidebar-content {
+  display: none !important;
+}
+
+.is-center ~ #body-content {
+  padding-left: 0 !important;
+}
+
+.is-center ~ #body-content #content-area {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 @media (min-width: 1024px) {
-  .is-not-custom ~ #body-content {
+  .is-not-custom.is-not-center ~ #body-content {
     padding-left: 17rem !important;
   }
 }

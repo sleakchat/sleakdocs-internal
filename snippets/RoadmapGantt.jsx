@@ -226,7 +226,7 @@ export const RoadmapGantt = () => {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16, marginTop: 10, fontSize: 12, opacity: 0.7 }}>
-        <Legend color={green} label='Gestart' />
+        <Legend color={green} label='In progress' />
         <Legend color={purple} label='Gepland' />
         <Legend color={orange} label='On hold' />
         <Legend color={red} label='Vandaag' />
