@@ -15,114 +15,159 @@
   },
   "favicon": "/logo/sleakfavicon.png",
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Internal docs",
-        "pages": [
-          "index"
+        "tab": "Home",
+        "icon": "house",
+        "groups": [
+          {
+            "group": "Start",
+            "pages": [
+              "index"
+            ]
+          }
         ]
       },
       {
-        "group": "Miscellaneous",
-        "pages": [
-          "api-reference/attribution-engine",
-          "miscellaneous/raycast-extension"
+        "tab": "Team handbook",
+        "icon": "users",
+        "groups": [
+          {
+            "group": "Handbook",
+            "pages": [
+              "handbook/introduction",
+              "handbook/weekly-standup",
+              "handbook/refinements"
+            ]
+          }
         ]
       },
       {
-        "group": "API Reference",
-        "pages": [
-          "api-reference/introduction",
-          "api-reference/authentication"
+        "tab": "Roadmap",
+        "icon": "map",
+        "groups": [
+          {
+            "group": "Roadmap",
+            "pages": [
+              "roadmap/overview",
+              "roadmap/timeline"
+            ]
+          }
         ]
       },
       {
-        "group": "Agent",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /agent/webhook/message"
-        ]
-      },
-      {
-        "group": "Memory Service",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /memory/add-messages"
-        ]
-      },
-      {
-        "group": "Embedding Web",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /embedding_web/process",
-          "POST /embedding_web/recurring",
-          "POST /embedding_web/filter",
-          "POST /embedding_web/delete/source",
-          "POST /embedding_web/delete/page",
-          "POST /embedding_web/sitemap/discover",
-          "POST /embedding_web/source/fetch"
-        ]
-      },
-      {
-        "group": "Evaluations Processor",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /evaluations_processor/process",
-          "POST /evaluations_processor/process_qa",
-          "POST /evaluations_processor/settle_resolution"
-        ]
-      },
-      {
-        "group": "Chat Evaluation Queue",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /queueing_evaluations/queueing/evaluations"
-        ]
-      },
-      {
-        "group": "Chat Closing Queue",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /queueing_chat_closed/queueing/close_chat"
-        ]
-      },
-      {
-        "group": "Chat Tagging Queue",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /queueing_tags/queueing/tags"
-        ]
-      },
-      {
-        "group": "Clustering",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /clustering/queue",
-          "POST /clustering/queueing/clustering",
-          "POST /clustering/queueing/clustering/delete",
-          "DELETE /clustering/queue/{chat_id}",
-          "POST /clustering/process",
-          "POST /clustering/initialise",
-          "POST /clustering/discover",
-          "POST /clustering/gaps/initialise",
-          "POST /clustering/gaps/surface",
-          "GET /clustering/healthz"
-        ]
-      },
-      {
-        "group": "Clustering Queue",
-        "expanded": true,
-        "openapi": "openapi.json",
-        "pages": [
-          "POST /queueing-clustering/queueing/clustering"
+        "tab": "Product docs",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "product/overview"
+            ]
+          },
+          {
+            "group": "Miscellaneous",
+            "pages": [
+              "api-reference/attribution-engine",
+              "miscellaneous/raycast-extension"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/authentication"
+            ]
+          },
+          {
+            "group": "Agent",
+            "expanded": true,
+            "openapi": "openapi.json",
+            "pages": [
+              "POST /agent/webhook/message"
+            ]
+          },
+          {
+            "group": "Memory Service",
+            "expanded": true,
+            "openapi": "openapi.json",
+            "pages": [
+              "POST /memory/add-messages"
+            ]
+          },
+          {
+            "group": "Embedding Web",
+            "expanded": true,
+            "openapi": "openapi.json",
+            "pages": [
+              "POST /embedding_web/process",
+              "POST /embedding_web/recurring",
+              "POST /embedding_web/filter",
+              "POST /embedding_web/delete/source",
+              "POST /embedding_web/delete/page",
+              "POST /embedding_web/sitemap/discover",
+              "POST /embedding_web/source/fetch"
+            ]
+          },
+          {
+            "group": "Evaluations Processor",
+            "expanded": true,
+            "openapi": "openapi.json",
+            "pages": [
+              "POST /evaluations_processor/process",
+              "POST /evaluations_processor/process_qa",
+              "POST /evaluations_processor/settle_resolution"
+            ]
+          },
+          {
+            "group": "Chat Evaluation Queue",
+            "expanded": true,
+            "openapi": "openapi.json",
+            "pages": [
+              "POST /queueing_evaluations/queueing/evaluations"
+            ]
+          },
+          {
+            "group": "Chat Closing Queue",
+            "expanded": true,
+            "openapi": "openapi.json",
+            "pages": [
+              "POST /queueing_chat_closed/queueing/close_chat"
+            ]
+          },
+          {
+            "group": "Chat Tagging Queue",
+            "expanded": true,
+            "openapi": "openapi.json",
+            "pages": [
+              "POST /queueing_tags/queueing/tags"
+            ]
+          },
+          {
+            "group": "Clustering",
+            "expanded": true,
+            "openapi": "openapi.json",
+            "pages": [
+              "POST /clustering/queue",
+              "POST /clustering/queueing/clustering",
+              "POST /clustering/queueing/clustering/delete",
+              "DELETE /clustering/queue/{chat_id}",
+              "POST /clustering/process",
+              "POST /clustering/initialise",
+              "POST /clustering/discover",
+              "POST /clustering/gaps/initialise",
+              "POST /clustering/gaps/surface",
+              "GET /clustering/healthz"
+            ]
+          },
+          {
+            "group": "Clustering Queue",
+            "expanded": true,
+            "openapi": "openapi.json",
+            "pages": [
+              "POST /queueing-clustering/queueing/clustering"
+            ]
+          }
         ]
       }
     ]
