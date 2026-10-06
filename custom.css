@@ -10,9 +10,42 @@ figure img {
 
 #sidebar-content {
   border-right: 1px solid #f3f4f6;
-  width: 20rem !important;
+  width: 17rem !important;
 }
 
+#navigation-items > div {
+  padding-left: 1.25rem !important;
+  padding-right: 0.75rem !important;
+}
+
+#navigation-items .sidebar-group-header {
+  margin-bottom: 0.25rem !important;
+}
+
+#navigation-items .sidebar-group a {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+}
+
+#content-area:has(#roadmap-timeline) {
+  max-width: none !important;
+}
+
+#content-area:has(#roadmap-timeline) > #header,
+#content-area:has(#roadmap-timeline) > #pagination,
+#content-area:has(#roadmap-timeline) > #footer {
+  display: none !important;
+}
+
+#content-area:has(#roadmap-timeline) > #content {
+  margin-top: 0 !important;
+}
+
+@media (min-width: 1024px) {
+  .is-not-custom ~ #body-content {
+    padding-left: 17rem !important;
+  }
+}
 .dark #sidebar-content {
   border-right: 1px solid #1f2937;
 }

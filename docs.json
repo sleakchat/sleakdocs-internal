@@ -199,10 +199,6 @@
   "navbar": {
     "links": [
       {
-        "label": "Public API reference",
-        "href": "https://docs.sleak.chat/api/overview"
-      },
-      {
         "label": "Public Docs",
         "href": "https://docs.sleak.chat"
       }
