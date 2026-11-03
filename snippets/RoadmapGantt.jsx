@@ -5,9 +5,9 @@ export const RoadmapGantt = () => {
       items: [
         { name: 'Laatste onderdelen afwerken', start: '2026-10-01', end: '2026-10-31' },
         { name: 'Polishing & improvements (kevin/bas)', start: '2026-10-22', end: '2026-11-15' },
-        { name: 'Testing & improvements (team)', start: '2026-11-01', end: '2026-11-15' },
-        { name: 'Early public testing (beta users)', start: '2026-11-10', end: '2026-11-25' },
-        { name: 'Public release', start: '2026-11-16', end: '2026-11-30' },
+        { name: 'Testing & improvements (team)', start: '2026-11-08', end: '2026-11-22' },
+        { name: 'Early public testing (beta users)', start: '2026-11-17', end: '2026-12-02' },
+        { name: 'Public release', start: '2026-11-23', end: '2026-12-07' },
         { name: 'Refinements & openstaande features', start: '2026-12-01', end: '2026-12-31' }
       ]
     },
