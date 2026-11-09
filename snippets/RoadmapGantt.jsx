@@ -4,15 +4,16 @@ export const RoadmapGantt = () => {
       name: 'Dashboard UIV3',
       items: [
         { name: 'Laatste onderdelen afwerken', start: '2026-10-01', end: '2026-10-31' },
-        { name: 'Polishing & improvements (kevin/bas)', start: '2026-10-22', end: '2026-11-15' },
-        { name: 'Testing & improvements (team)', start: '2026-11-08', end: '2026-11-22' },
-        { name: 'Early public testing (beta users)', start: '2026-11-17', end: '2026-12-02' },
-        { name: 'Public release', start: '2026-11-23', end: '2026-12-07' },
+        { name: 'Polishing & improvements (kevin/bas)', start: '2026-10-29', end: '2026-11-22' },
+        { name: 'Testing & improvements (team)', start: '2026-11-15', end: '2026-11-29' },
+        { name: 'Early public testing (beta users)', start: '2026-11-24', end: '2026-12-09' },
+        { name: 'Public release', start: '2026-11-30', end: '2026-12-06' },
         { name: 'Refinements & openstaande features', start: '2026-12-01', end: '2026-12-31' }
       ]
     },
     {
       name: 'Omnichannel',
+      paused: true,
       items: [
         { name: 'Meta verification', start: '2026-10-05', end: '2026-10-25' },
         { name: 'Explorations & prototyping', start: '2026-10-01', end: '2026-11-30' },
@@ -20,7 +21,7 @@ export const RoadmapGantt = () => {
         { name: 'Release', start: '2026-12-01', end: '2026-12-31' }
       ]
     },
-    { name: 'Website redesign', start: '2026-11-01', end: '2026-11-30', paused: true },
+    { name: 'Website redesign', start: '2026-11-01', end: '2026-11-30' },
     {
       name: 'Knowledge gaps & AI insights',
       items: [
@@ -73,7 +74,7 @@ export const RoadmapGantt = () => {
   }
   const weekW = ((7 * 864e5) / total) * 100;
 
-  const [open, setOpen] = useState({ 'Dashboard UIV3': true, Omnichannel: true, 'Knowledge gaps & AI insights': true });
+  const [open, setOpen] = useState({ 'Dashboard UIV3': true });
 
   const line = 'rgba(128,128,128,0.18)';
   const border = `1px solid ${line}`;
@@ -192,7 +193,7 @@ export const RoadmapGantt = () => {
                 open[p.name] &&
                 p.items.map(i => (
                   <Row key={i.name} label={i.name} indent>
-                    <Bar start={i.start} end={i.end} color={i.paused ? orange : i.started || new Date(i.start) <= today ? green : purple} faded />
+                    <Bar start={i.start} end={i.end} color={i.paused || p.paused ? orange : i.started || new Date(i.start) <= today ? green : purple} faded />
                   </Row>
                 ))}
             </>
